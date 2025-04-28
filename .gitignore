@@ -10,7 +10,7 @@ override.tf.json
 *_override.tf.json
 .terraform/
 .terraform.lock.hcl
-/terraform
+terraform/terraform_config/
 
 # Чутливі файли
 *.pem
