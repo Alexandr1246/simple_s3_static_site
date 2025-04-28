@@ -19,26 +19,33 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
   price_class         = "PriceClass_100"
   default_root_object = "index.html"
 
+aliases = [
+    "itstep-project.online",
+    "www.itstep-project.online"
+  ]
+
 default_cache_behavior {
-target_origin_id       = "S3-${aws_s3_bucket.static_site.bucket}"
-    viewer_protocol_policy = "redirect-to-https"
-    allowed_methods {
-cached_methods           = ["GET", "HEAD"]
-    items                    = ["GET", "HEAD"]
-      
+  target_origin_id       = "S3-${aws_s3_bucket.static_site.bucket}"
+  viewer_protocol_policy = "redirect-to-https"
+
+  allowed_methods = ["GET", "HEAD"]
+  cached_methods  = ["GET", "HEAD"]
+
+  compress = true
+
+  forwarded_values {
+    query_string = false
+
+    cookies {
+      forward = "none"
     }
-    compress = true
   }
+}
 
   restrictions {
     geo_restriction {
       restriction_type = "none"
     }
-  }
-
-  # Якщо потрібно використовувати свій домен:
-  aliases {
-    items = ["www.example.com"]  # Якщо потрібно використовувати свій домен
   }
 
   logging_config {
@@ -53,7 +60,8 @@ cached_methods           = ["GET", "HEAD"]
 
   # Якщо ти хочеш використовувати SSL сертифікат
   viewer_certificate {
-    acm_certificate_arn = var.acm_certificate_arn  # Замінити на ARN свого сертифікату
-    ssl_support_method  = "sni-only"
-  }
+  acm_certificate_arn = aws_acm_certificate.cert.arn
+  ssl_support_method  = "sni-only"
+  minimum_protocol_version = "TLSv1.2_2021"
+}
 }
