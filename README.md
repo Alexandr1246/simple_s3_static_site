@@ -1,0 +1,1 @@
+# simple_s3_static_site
