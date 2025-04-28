@@ -21,13 +21,13 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::<your-aws-account-id>:role/github-oidc-role
+          role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
           aws-region: eu-north-1  # Або твій регіон
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5  # або будь-яка актуальна версія
+          terraform_version: 1.11.4  # або будь-яка актуальна версія
 
       - name: Terraform Init
         run: terraform init
