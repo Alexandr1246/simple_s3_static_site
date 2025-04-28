@@ -1,0 +1,47 @@
+# Локальні файли Terraform
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfplan
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform/
+.terraform.lock.hcl
+
+# Чутливі файли
+*.pem
+*.key
+*.crt
+*.env
+*.secret
+*.json
+
+# GitHub Actions Secrets (на всякий випадок)
+.github/secrets/
+
+# IDE специфічне (PyCharm, VSCode і т.д.)
+.idea/
+.vscode/
+
+# Логи
+*.log
+
+# MacOS специфічне
+.DS_Store
+
+# Linux специфічне
+*.swp
+
+# Node.js (якщо випадково підтягуються залежності)
+node_modules/
+
+# Python (якщо є скрипти)
+__pycache__/
+*.pyc
+
+# Бекапи
+*.bak
+*.tmp

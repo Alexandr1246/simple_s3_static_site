@@ -1,1 +1,42 @@
-#wiil write something
+name: Deploy Infrastructure
+
+on:
+  pull_request:
+    branches:
+      - main   # Тільки коли пуш у гілку main
+  workflow_dispatch:
+
+permissions:
+  id-token: write    # Дозволяємо GitHub Actions отримувати OIDC токен
+  contents: read     # Дозволяємо читати репозиторій
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::<your-aws-account-id>:role/github-oidc-role
+          aws-region: eu-north-1  # Або твій регіон
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5  # або будь-яка актуальна версія
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
