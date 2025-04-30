@@ -24,6 +24,7 @@ jobs:
           role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
           aws-region: eu-north-1  # Або твій регіон
       
+          
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
