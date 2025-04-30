@@ -14,6 +14,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      TF_VAR_bucket_name: "simple-site-20253004"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,6 +42,10 @@ jobs:
         run: terraform init
         working-directory: terraform
 
+      - name: Terraform Format
+        run: terraform fmt -check
+        working-directory: terraform
+        
       - name: Terraform Validate
         run: terraform validate
         working-directory: terraform
@@ -46,6 +53,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
         working-directory: terraform
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: terraform
