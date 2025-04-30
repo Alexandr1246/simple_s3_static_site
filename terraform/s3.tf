@@ -5,7 +5,7 @@ variable "bucket_name" {
 
 # 1) Створюємо S3 бакет (за замовчуванням без публічного доступу)
 resource "aws_s3_bucket" "static_site" {
-  bucket = var.simple.site.20253004
+  bucket = var.bucket_name
 
   tags = {
     Name        = var.bucket_name
