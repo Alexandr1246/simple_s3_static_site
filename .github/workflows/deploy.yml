@@ -1,9 +1,9 @@
 name: Deploy Infrastructure
 
 on:
-  pull_request:
+  push:
     branches:
-      - main   # Тільки коли пуш у гілку main
+      - main  
   workflow_dispatch:
 
 permissions:
@@ -23,11 +23,16 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
           aws-region: eu-north-1  # Або твій регіон
-
+      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.11.4  # або будь-яка актуальна версія
+
+      - name: Dump OIDC token
+        run: |
+          echo "OIDC_TOKEN: ${{ steps.configure.outputs.id-token }}"
+        id: dump
 
       - name: Terraform Init
         run: terraform init
@@ -40,3 +45,4 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
