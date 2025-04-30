@@ -19,28 +19,28 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
   price_class         = "PriceClass_100"
   default_root_object = "index.html"
 
-aliases = [
+  aliases = [
     "itstep-project.online",
     "www.itstep-project.online"
   ]
 
-default_cache_behavior {
-  target_origin_id       = "S3-${aws_s3_bucket.static_site.bucket}"
-  viewer_protocol_policy = "redirect-to-https"
+  default_cache_behavior {
+    target_origin_id       = "S3-${aws_s3_bucket.static_site.bucket}"
+    viewer_protocol_policy = "redirect-to-https"
 
-  allowed_methods = ["GET", "HEAD"]
-  cached_methods  = ["GET", "HEAD"]
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
 
-  compress = true
+    compress = true
 
-  forwarded_values {
-    query_string = false
+    forwarded_values {
+      query_string = false
 
-    cookies {
-      forward = "none"
+      cookies {
+        forward = "none"
+      }
     }
   }
-}
 
   restrictions {
     geo_restriction {
@@ -50,8 +50,8 @@ default_cache_behavior {
 
   logging_config {
     include_cookies = false
-    bucket           = "logs.example.com.s3.amazonaws.com"
-    prefix           = "cloudfront-logs/"
+    bucket          = "logs.example.com.s3.amazonaws.com"
+    prefix          = "cloudfront-logs/"
   }
 
   tags = {
@@ -60,8 +60,8 @@ default_cache_behavior {
 
   # Якщо ти хочеш використовувати SSL сертифікат
   viewer_certificate {
-  acm_certificate_arn = aws_acm_certificate.cert.arn
-  ssl_support_method  = "sni-only"
-  minimum_protocol_version = "TLSv1.2_2021"
-}
+    acm_certificate_arn      = aws_acm_certificate.cert.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
 }

@@ -6,8 +6,8 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowCloudFrontRead"
-        Effect    = "Allow"
+        Sid    = "AllowCloudFrontRead"
+        Effect = "Allow"
         Principal = {
           AWS = aws_cloudfront_origin_access_identity.oai.iam_arn
         }
