@@ -22,10 +22,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials (OIDC)
+        id: configure
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
-          aws-region: eu-north-1  # Або твій регіон
+          aws-region: eu-north-1
       
           
       - name: Setup Terraform
@@ -45,7 +46,7 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check
         working-directory: terraform
-        
+
       - name: Terraform Validate
         run: terraform validate
         working-directory: terraform
