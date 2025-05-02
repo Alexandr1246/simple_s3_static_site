@@ -1,8 +1,3 @@
-variable "bucket_name" {
-  description = "Унікальна назва S3 бакета для статичного сайту"
-  type        = string
-}
-
 resource "aws_s3_bucket" "static_site" {
   bucket = var.bucket_name
 
