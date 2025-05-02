@@ -5,7 +5,7 @@ module "s3" {
 }
 
 module "policy" {
-  source             = "./modules/polici"
+  source             = "./modules/policy"
   bucket_id          = module.s3.bucket_id
   bucket_arn         = module.s3.bucket_arn
   cloudfront_oai_arn = module.cloudfront.oai_arn
