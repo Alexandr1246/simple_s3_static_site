@@ -3,17 +3,16 @@ variable "bucket_name" {
   type        = string
 }
 
-# 1) Створюємо S3 бакет (за замовчуванням без публічного доступу)
 resource "aws_s3_bucket" "static_site" {
   bucket = var.bucket_name
 
   tags = {
     Name        = var.bucket_name
-    Environment = "production"
+    Environment = var.environment
   }
 }
 
-# 2) Блокуємо публічний доступ (через окремий ресурс, не ACL)
+
 resource "aws_s3_bucket_public_access_block" "static_site" {
   bucket = aws_s3_bucket.static_site.id
 
