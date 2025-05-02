@@ -26,9 +26,9 @@ module "cloudfront" {
   domain_aliases      = [var.domain_name, "www.${var.domain_name}"]
 }
 
-module "iam" {
-  source = "./modules/iam"
-}
+#module "iam" {
+#  source = "./modules/iam"
+#}
 
 module "route53" {
   source         = "./modules/route53"
