@@ -14,6 +14,7 @@ variable "subject_alternative_names" {
   type        = list(string)
   default     = ["www.itstep-project.online"]
 }
+
 variable "environment" {
   type    = string
   default = "prod"

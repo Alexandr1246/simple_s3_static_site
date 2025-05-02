@@ -12,7 +12,6 @@ resource "aws_s3_bucket" "static_site" {
   }
 }
 
-
 resource "aws_s3_bucket_public_access_block" "static_site" {
   bucket = aws_s3_bucket.static_site.id
 
