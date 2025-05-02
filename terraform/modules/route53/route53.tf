@@ -1,3 +1,7 @@
+resource "aws_route53_zone" "main" {
+  name = "itstep-project.online"
+}
+
 resource "aws_route53_record" "root" {
   zone_id = aws_route53_zone.main.zone_id
   name    = "itstep-project.online"
