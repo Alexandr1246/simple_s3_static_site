@@ -1,22 +1,19 @@
 output "cloudfront_distribution_domain_name" {
-  value       = aws_cloudfront_distribution.static_site_distribution.domain_name
-  description = "The domain name of the CloudFront distribution"
+  value = module.cloudfront.cloudfront_domain
 }
+
 output "name_servers" {
-  value = aws_route53_zone.main.name_servers
+  value = module.route53.name_servers
 }
 
 output "certificate_arn" {
-  description = "ARN of the ACM SSL Certificate"
-  value       = aws_acm_certificate.cert.arn
+  value = module.acm.acm_arn
 }
 
 output "certificate_status" {
-  description = "Status of the ACM Certificate"
-  value       = aws_acm_certificate.cert.status
+  value = module.acm.certificate_status
 }
 
 output "certificate_domain_validation_options" {
-  description = "Domain validation information for the certificate"
-  value       = aws_acm_certificate.cert.domain_validation_options
+  value = module.acm.domain_validation_options
 }

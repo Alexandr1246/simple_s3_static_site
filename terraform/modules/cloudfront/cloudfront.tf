@@ -1,5 +1,3 @@
-// cloudfront.tf
-
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI для доступу до приватного S3 бакета"
 }
