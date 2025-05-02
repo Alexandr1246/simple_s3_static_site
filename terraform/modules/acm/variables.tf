@@ -13,3 +13,8 @@ variable "region" {
   description = "Регіон (має бути us-east-1 для CloudFront)"
   type        = string
 }
+
+variable "zone_id" {
+  description = "ID Route53 Hosted Zone для DNS‑валідації"
+  type        = string
+}

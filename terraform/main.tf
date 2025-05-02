@@ -16,6 +16,7 @@ module "acm" {
   domain_name               = var.domain_name
   subject_alternative_names = ["www.${var.domain_name}"]
   region                    = var.region
+  zone_id                   = module.route53.zone_id
 }
 
 module "cloudfront" {
