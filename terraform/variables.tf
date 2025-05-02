@@ -1,6 +1,6 @@
 variable "bucket_name" {
-  type        = string
-  default     = "simple-site-20253004"
+  type    = string
+  default = "simple-site-20253004"
 }
 
 variable "domain_name" {

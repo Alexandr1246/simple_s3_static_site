@@ -12,10 +12,10 @@ module "policy" {
 }
 
 module "acm" {
-  source            = "./modules/acm"
-  domain_name       = var.domain_name
+  source                    = "./modules/acm"
+  domain_name               = var.domain_name
   subject_alternative_names = ["www.${var.domain_name}"]
-  region            = var.region
+  region                    = var.region
 }
 
 module "cloudfront" {
@@ -34,5 +34,5 @@ module "route53" {
   source         = "./modules/route53"
   domain_name    = var.domain_name
   cloudfront_dns = module.cloudfront.cloudfront_domain
-  zone_id        = var.zone_id  # або отримати динамічно, якщо модуль acm/route53 повертає його
+  zone_id        = var.zone_id # або отримати динамічно, якщо модуль acm/route53 повертає його
 }
