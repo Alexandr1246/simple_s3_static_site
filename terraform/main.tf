@@ -20,11 +20,12 @@ module "policy" {
 #}
 
 module "cloudfront" {
-  source              = "./modules/cloudfront"
-  bucket_name         = module.s3.bucket_name
-  s3_origin_id        = module.s3.bucket_name
-  acm_certificate_arn = module.acm.acm_arn
-  domain_aliases      = [var.domain_name, "www.${var.domain_name}"]
+  source = "./modules/cloudfront"
+
+  bucket_name     = aws_s3_bucket.static_site.bucket_regional_domain_name
+  s3_origin_id    = aws_s3_bucket.static_site.bucket
+  domain_aliases  = ["itstep-project.online", "www.itstep-project.online"]
+  acm_certificate_arn = "" # можна залишити пустим або не передавати, якщо не використовується
 }
 
 #module "iam" {
