@@ -20,7 +20,7 @@ module "policy" {
 #}
 
 module "cloudfront" {
-  source = "./modules/cloudfront"
+  source              = "./modules/cloudfront"
   bucket_name         = module.s3.bucket_regional_domain_name
   s3_origin_id        = module.s3.bucket
   domain_aliases      = ["itstep-project.online", "www.itstep-project.online"]
