@@ -17,10 +17,10 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
   price_class         = "PriceClass_100"
   default_root_object = "index.html"
 
-  aliases = [
-    "itstep-project.online",
-    "www.itstep-project.online"
-  ]
+#  aliases = [
+#    "itstep-project.online",
+#    "www.itstep-project.online"
+#  ]
 
   default_cache_behavior {
     target_origin_id       = "S3-${aws_s3_bucket.static_site.bucket}"
@@ -56,11 +56,15 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
     Name = "static-site-cloudfront-distribution"
   }
 
-  # Якщо ти хочеш використовувати SSL сертифікат
-  viewer_certificate {
-    #acm_certificate_arn      = aws_acm_certificate.cert.arn
-    acm_certificate_arn      = var.acm_certificate_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
-  }
+viewer_certificate {
+  cloudfront_default_certificate = true
 }
+}
+# Якщо ти хочеш використовувати SSL сертифікат
+#  viewer_certificate {
+#    acm_certificate_arn      = aws_acm_certificate.cert.arn
+#    acm_certificate_arn      = var.acm_certificate_arn
+#    ssl_support_method       = "sni-only"
+#    minimum_protocol_version = "TLSv1.2_2021"
+#  }
+#}
