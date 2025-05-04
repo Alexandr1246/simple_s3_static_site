@@ -21,9 +21,8 @@ module "policy" {
 
 module "cloudfront" {
   source = "./modules/cloudfront"
-
-  bucket_name         = aws_s3_bucket.static_site.bucket_regional_domain_name
-  s3_origin_id        = aws_s3_bucket.static_site.bucket
+  bucket_name         = module.s3.bucket_regional_domain_name
+  s3_origin_id        = module.s3.bucket
   domain_aliases      = ["itstep-project.online", "www.itstep-project.online"]
   acm_certificate_arn = "" # можна залишити пустим або не передавати, якщо не використовується
 }
