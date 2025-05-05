@@ -22,3 +22,8 @@ variable "log_bucket_name" {
   description = "Назва S3 бакета для логів CloudFront"
   type        = string
 }
+
+variable "log_bucket_domain" {
+  description = "Full domain name of the S3 bucket to store CloudFront logs (e.g. logs-bucket.s3.amazonaws.com)"
+  type        = string
+}

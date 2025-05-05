@@ -41,9 +41,9 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
     }
   }
   logging_config {
-  bucket = "${aws_s3_bucket.logs_bucket.bucket}.s3.amazonaws.com"
+  bucket = var.log_bucket_domain
   prefix = "cloudfront-logs/"
-}
+  }
 
   tags = {
     Name = "static-site-cloudfront-distribution"
