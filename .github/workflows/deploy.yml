@@ -16,8 +16,7 @@ jobs:
 
     env:
       TF_VAR_bucket_name: "simple-site-20253004"
-      EXISTS: "false" 
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -38,14 +37,14 @@ jobs:
         id: check_s3
         run: |
           if aws s3api head-bucket --bucket $TF_VAR_bucket_name 2>/dev/null; then
-            echo "EXISTS=true" >> $GITHUB_ENV
+            echo "exists=true" >> $GITHUB_OUTPUT
           else
-            echo "EXISTS=false" >> $GITHUB_ENV
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Dump bucket check
         run: |
-          echo "Bucket exists: ${{ env.EXISTS }}"
+          echo "Bucket exists: ${{ steps.check_s3.outputs.exists }}"
 
       - name: Terraform Init
         run: terraform init
@@ -53,10 +52,6 @@ jobs:
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-init.log
-
-      #- name: Terraform Format
-      #  run: terraform fmt -check
-      #  working-directory: terraform
 
       - name: Terraform Validate
         run: terraform validate
@@ -66,20 +61,25 @@ jobs:
           TF_LOG_PATH: terraform-valid.log
 
       - name: Terraform Plan
-        if: ${{ env.EXISTS == 'false' }}
-        run: terraform plan -out=tfplan
+        if: ${{ steps.check_s3.outputs.exists == 'false' }}
+        run: terraform plan
         working-directory: terraform
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-plan.log
 
       - name: Terraform Apply
-        if: ${{ env.EXISTS == 'false' }}
-        run: terraform apply -auto-approve tfplan
+        if: ${{ steps.check_s3.outputs.exists == 'false' }}
+        run: terraform apply -auto-approve
         working-directory: terraform
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-apply.log
+
+      - name: Upload index.html to S3
+        if: ${{ steps.check_s3.outputs.exists == 'false' }}
+        run: |
+          aws s3 cp ./site/index.html s3://${TF_VAR_bucket_name}/index.html
 
       - name: Show Terraform logs
         if: always()
@@ -99,9 +99,3 @@ jobs:
           echo "::group::Terraform Apply Log"
           cat terraform/terraform-apply.log || echo "No apply log found"
           echo "::endgroup::"
-
-          - name: Upload index.html to S3
-          if: ${{ env.EXISTS == 'false' }}
-          run: |
-            aws s3 cp ./site/index.html s3://${TF_VAR_bucket_name}/index.html
-  
