@@ -8,7 +8,6 @@ variable "logs_bucket_name" {
   type        = string
 }
 
-
 variable "environment" {
   description = "Назва середовища (наприклад: dev, staging, prod)"
   type        = string

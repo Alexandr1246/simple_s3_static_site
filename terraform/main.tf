@@ -5,6 +5,11 @@ module "s3" {
   logs_bucket_name = module.s3.logs_bucket_name
 }
 
+module "logs_bucket" {
+  source      = "./modules/logs_bucket"
+  bucket_name = var.log_bucket_name
+}
+
 module "policy" {
   source             = "./modules/policy"
   bucket_id          = module.s3.bucket_id
