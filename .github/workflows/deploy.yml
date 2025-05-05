@@ -80,3 +80,23 @@ jobs:
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-apply.log
+
+      - name: Show Terraform logs
+        if: always()
+        run: |
+          echo "::group::Terraform Init Log"
+          cat terraform/terraform-init.log || echo "No init log found"
+          echo "::endgroup::"
+  
+          echo "::group::Terraform Validate Log"
+          cat terraform/terraform-valid.log || echo "No validate log found"
+          echo "::endgroup::"
+  
+          echo "::group::Terraform Plan Log"
+          cat terraform/terraform-plan.log || echo "No plan log found"
+          echo "::endgroup::"
+  
+          echo "::group::Terraform Apply Log"
+          cat terraform/terraform-apply.log || echo "No apply log found"
+          echo "::endgroup::"
+  
