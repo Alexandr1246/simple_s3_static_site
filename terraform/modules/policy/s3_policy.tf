@@ -18,26 +18,31 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
   })
 }
 
-resource "aws_s3_bucket_policy" "logs_bucket_policy" {
-  bucket = aws_s3_bucket.logs_bucket.id
+ resource "aws_s3_bucket_policy" "logs_bucket_policy" {
+  bucket = var.logs_bucket_name
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid    = "AllowCloudFrontLogs"
-        Effect = "Allow"
-        Principal = {
-          Service = "cloudfront.amazonaws.com"
-        }
-        Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.logs_bucket.arn}/*"
-        Condition = {
-          StringEquals = {
-            "AWS:SourceAccount" = var.aws_account_id
-          }
-        }
-      }
-    ]
-  })
-}
+   policy = jsonencode({
+     Version = "2012-10-17"
+     Statement = [
+       {
+         Sid       = "AllowCloudFrontLogs"
+         Effect    = "Allow"
+         Principal = { Service = "cloudfront.amazonaws.com" }
+         Resource  = "${var.logs_bucket_arn}/*"
+         Condition = {
+           StringEquals = {
+             "AWS:SourceAccount" = var.aws_account_id
+           }
+         }
+       },
+       {
+         Sid       = "AllowGetBucketAcl"
+         Effect    = "Allow"
+         Principal = { Service = "cloudfront.amazonaws.com" }
+         ction    = "s3:GetBucketAcl"
+         Resource  = var.logs_bucket_arn
+       }
+     ]
+   })
+ }
+

@@ -6,7 +6,7 @@ module "s3" {
 }
 
 module "logs_bucket" {
-  source             = "./modules/logs_bucket"
+  source      = "./modules/logs_bucket"
   bucket_name = var.log_bucket_name
 }
 
@@ -16,7 +16,10 @@ module "policy" {
   bucket_arn         = module.s3.bucket_arn
   cloudfront_oai_arn = module.cloudfront.oai_arn
   aws_account_id     = var.aws_account_id
+  logs_bucket_name   = module.logs_bucket.bucket
+  logs_bucket_arn    = module.logs_bucket.arn
 }
+
 
 #module "acm" {
 #  source                    = "./modules/acm"
