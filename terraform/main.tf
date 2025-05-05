@@ -18,8 +18,8 @@ module "policy" {
   bucket_arn         = module.s3.bucket_arn
   cloudfront_oai_arn = module.cloudfront.oai_arn
   aws_account_id     = var.aws_account_id
-  logs_bucket_name   = module.logs_bucket.bucket
-  logs_bucket_arn    = module.logs_bucket.arn
+  log_bucket_name   = module.log_bucket.bucket
+  log_bucket_arn    = module.log_bucket.arn
 }
 
 
@@ -37,10 +37,7 @@ module "cloudfront" {
   s3_origin_id     = module.s3.bucket
   domain_aliases   = ["itstep-project.online", "www.itstep-project.online"]
   acm_certificate_arn = ""
-  log_bucket_name  = var.log_bucket_name   # ← саме так
-  providers = {
-    aws = aws.use1
-  }
+  log_bucket_name  = var.log_bucket_name 
 }
 
 #module "iam" {
