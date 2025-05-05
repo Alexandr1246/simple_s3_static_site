@@ -38,6 +38,7 @@ variable "region" {
 variable "aws_account_id" {
   description = "ID AWS акаунту, використовується для політик доступу"
   type        = string
+  default     = "050451395507"
 }
 
 
