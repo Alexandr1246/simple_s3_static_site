@@ -46,7 +46,7 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
     }
   }
   logging_config {
-    bucket = aws_s3_bucket.logs_bucket.bucket  # Використовуємо створений бакет для логів
+    bucket = aws_s3_bucket.logs_bucket.bucket
     prefix = "cloudfront-logs/"
   }
 
