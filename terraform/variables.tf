@@ -3,6 +3,11 @@ variable "bucket_name" {
   default = "simple-site-20253004"
 }
 
+variable "log_bucket_name" {
+  type    = string
+  default = "logs-itstep-project"
+}
+
 variable "domain_name" {
   description = "Основне ім'я домену"
   type        = string
