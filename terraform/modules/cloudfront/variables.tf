@@ -18,3 +18,7 @@ variable "domain_aliases" {
   type        = list(string)
 }
 
+variable "logs_bucket_name" {
+  description = "Ім'я S3 бакета для зберігання логів CloudFront"
+  type        = string
+}

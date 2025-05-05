@@ -46,10 +46,9 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
     }
   }
   logging_config {
-    include_cookies = false
-    bucket          = aws_s3_bucket.logs_bucket.bucket
-    prefix          = "cloudfront-logs/"
-  }
+  bucket = var.logs_bucket_name   # або aws_s3_bucket.logs_bucket.bucket
+  prefix = "cloudfront-logs/"
+}
 
   tags = {
     Name = "static-site-cloudfront-distribution"
