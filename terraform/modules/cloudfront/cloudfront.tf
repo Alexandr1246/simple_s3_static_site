@@ -2,11 +2,6 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI для доступу до приватного S3 бакета"
 }
 
-# окремий логовий бакет
-resource "aws_s3_bucket" "logs_bucket" {
-  bucket = "logs-itstep-project"
-}
-
 resource "aws_cloudfront_distribution" "static_site_distribution" {
   origin {
     domain_name = var.bucket_name
@@ -46,7 +41,7 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
     }
   }
   logging_config {
-    bucket = aws_s3_bucket.logs_bucket.bucket
+    bucket = var.log_bucket_name
     prefix = "cloudfront-logs/"
   }
 

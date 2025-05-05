@@ -32,12 +32,15 @@ module "policy" {
 #}
 
 module "cloudfront" {
-  source              = "./modules/cloudfront"
-  bucket_name         = module.s3.bucket_regional_domain_name
-  s3_origin_id        = module.s3.bucket
-  domain_aliases      = ["itstep-project.online", "www.itstep-project.online"]
+  source           = "./modules/cloudfront"
+  bucket_name      = module.s3.bucket_regional_domain_name
+  s3_origin_id     = module.s3.bucket
+  domain_aliases   = ["itstep-project.online", "www.itstep-project.online"]
   acm_certificate_arn = ""
-  logs_bucket_name    = var.log_bucket_name # <-- ось сюди
+  log_bucket_name  = var.log_bucket_name   # ← саме так
+  providers = {
+    aws = aws.use1
+  }
 }
 
 #module "iam" {
