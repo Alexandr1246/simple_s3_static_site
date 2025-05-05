@@ -77,7 +77,6 @@ jobs:
           TF_LOG_PATH: terraform-apply.log
 
       - name: Upload index.html to S3
-        if: ${{ steps.check_s3.outputs.exists == 'false' }}
         run: |
           aws s3 cp ./site/index.html s3://${TF_VAR_bucket_name}/index.html
 
