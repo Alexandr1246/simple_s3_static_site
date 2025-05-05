@@ -47,7 +47,7 @@ jobs:
           echo "Bucket exists: ${{ steps.check_s3.outputs.exists }}"
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -upgrade
         working-directory: terraform
         env:
           TF_LOG: DEBUG
