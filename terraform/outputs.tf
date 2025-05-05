@@ -1,5 +1,11 @@
-output "cloudfront_distribution_domain_name" {
+output "cloudfront_domain_name" {
   value = module.cloudfront.cloudfront_domain
+  description = "Доменне ім'я CloudFront Distribution"
+}
+
+output "cloudfront_oai_arn" {
+  value = module.cloudfront.oai_arn
+  description = "ARN Origin Access Identity для CloudFront"
 }
 
 #output "name_servers" {
