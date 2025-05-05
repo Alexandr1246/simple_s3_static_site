@@ -30,7 +30,7 @@ resource "aws_s3_bucket_policy" "logs_bucket_policy" {
         Principal = {
           Service = "cloudfront.amazonaws.com"
         }
-        Action = "s3:PutObject"
+        Action   = "s3:PutObject"
         Resource = "${aws_s3_bucket.logs_bucket.arn}/*"
         Condition = {
           StringEquals = {
