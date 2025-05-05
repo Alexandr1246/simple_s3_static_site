@@ -18,30 +18,36 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
   })
 }
 
-resource "aws_s3_bucket_policy" "logs_bucket_policy" {
-  bucket = var.logs_bucket_name
+resource "aws_s3_bucket_policy" "log_bucket_policy" {
+  bucket = var.log_bucket_name
+  provider = aws.use1
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Sid       = "AllowCloudFrontLogs"
-        Effect    = "Allow"
-        Principal = { Service = "cloudfront.amazonaws.com" }
-        Action    = "s3:PutObject"
-        Resource  = "${var.logs_bucket_arn}/*"
-        Condition = {
-          StringEquals = {
-            "AWS:SourceAccount" = var.aws_account_id
+        Sid: "AWSLogDeliveryWrite",
+        Effect: "Allow",
+        Principal: {
+          Service: "delivery.logs.amazonaws.com"
+        },
+        Action: "s3:PutObject",
+        Resource: "${var.log_bucket_arn}/*",
+        Condition: {
+          StringEquals: {
+            "s3:x-amz-acl": "bucket-owner-full-control",
+            "aws:SourceAccount": var.aws_account_id
           }
         }
       },
       {
-        Sid       = "AllowGetBucketAcl"
-        Effect    = "Allow"
-        Principal = { Service = "cloudfront.amazonaws.com" }
-        Action    = "s3:GetBucketAcl"
-        Resource  = var.logs_bucket_arn
+        Sid: "AWSLogDeliveryAclCheck",
+        Effect: "Allow",
+        Principal: {
+          Service: "delivery.logs.amazonaws.com"
+        },
+        Action: "s3:GetBucketAcl",
+        Resource: var.log_bucket_arn
       }
     ]
   })
