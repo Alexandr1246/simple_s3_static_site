@@ -2,6 +2,7 @@ module "s3" {
   source      = "./modules/s3"
   bucket_name = var.bucket_name
   environment = var.environment
+  logs_bucket_name    = module.s3.logs_bucket_name
 }
 
 module "policy" {
@@ -9,6 +10,7 @@ module "policy" {
   bucket_id          = module.s3.bucket_id
   bucket_arn         = module.s3.bucket_arn
   cloudfront_oai_arn = module.cloudfront.oai_arn
+  aws_account_id     = var.aws_account_id
 }
 
 #module "acm" {

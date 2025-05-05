@@ -12,3 +12,8 @@ variable "cloudfront_oai_arn" {
   description = "IAM ARN для CloudFront OAI"
   type        = string
 }
+
+variable "aws_account_id" {
+  description = "ID AWS акаунту, використовується для політик доступу"
+  type        = string
+}

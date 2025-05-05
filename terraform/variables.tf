@@ -30,6 +30,10 @@ variable "region" {
 #  або передай через Terraform Cloud/TFVARS
 #}
 
+variable "aws_account_id" {
+  description = "ID AWS акаунту, використовується для політик доступу"
+  type        = string
+}
 
 
 

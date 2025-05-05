@@ -15,3 +15,13 @@ resource "aws_s3_bucket_public_access_block" "static_site" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket" "logs_bucket" {
+  bucket = var.logs_bucket_name
+  force_destroy = true
+
+  tags = {
+    Name        = "cloudfront-logs"
+    Environment = var.environment
+  }
+}
