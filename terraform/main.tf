@@ -6,11 +6,11 @@ module "s3" {
 }
 
 module "logs_bucket" {
-  source      = "./modules/logs_bucket"
-   providers = {
+  source = "./modules/logs_bucket"
+  providers = {
     aws = aws.use1
   }
-  bucket_name = var.log_bucket_name
+  log_bucket_name = var.log_bucket_name
 }
 
 module "policy" {
@@ -38,7 +38,7 @@ module "cloudfront" {
   s3_origin_id        = module.s3.bucket
   domain_aliases      = ["itstep-project.online", "www.itstep-project.online"]
   acm_certificate_arn = ""
-  logs_bucket_name    = var.log_bucket_name   # <-- ось сюди
+  logs_bucket_name    = var.log_bucket_name # <-- ось сюди
 }
 
 #module "iam" {
