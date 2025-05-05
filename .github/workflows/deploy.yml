@@ -50,6 +50,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
         working-directory: terraform
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-init.log
 
       #- name: Terraform Format
       #  run: terraform fmt -check
@@ -58,13 +61,22 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
         working-directory: terraform
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-valid.log
 
       - name: Terraform Plan
         if: ${{ env.EXISTS == 'false' }}
         run: terraform plan
         working-directory: terraform
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-plan.log
 
       - name: Terraform Apply
         if: ${{ env.EXISTS == 'false' }}
         run: terraform apply -auto-approve
         working-directory: terraform
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-apply.log
