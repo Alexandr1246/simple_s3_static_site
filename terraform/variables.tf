@@ -5,7 +5,7 @@ variable "bucket_name" {
 
 variable "log_bucket_name" {
   type    = string
-  default = "logs-itstep-project"
+  default = "logs-itstep-project-20250505"
 }
 
 variable "domain_name" {

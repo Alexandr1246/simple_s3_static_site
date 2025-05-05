@@ -18,7 +18,6 @@ resource "aws_s3_bucket_public_access_block" "static_site" {
 
 resource "aws_s3_bucket" "logs_bucket" {
   bucket        = var.logs_bucket_name
-  force_destroy = true
 
   tags = {
     Name        = "cloudfront-logs"
