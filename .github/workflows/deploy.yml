@@ -99,4 +99,9 @@ jobs:
           echo "::group::Terraform Apply Log"
           cat terraform/terraform-apply.log || echo "No apply log found"
           echo "::endgroup::"
+
+          - name: Upload index.html to S3
+          if: ${{ env.EXISTS == 'false' }}
+          run: |
+            aws s3 cp ./site/index.html s3://${TF_VAR_bucket_name}/index.html
   
