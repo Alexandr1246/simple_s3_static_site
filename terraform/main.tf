@@ -7,6 +7,9 @@ module "s3" {
 
 module "logs_bucket" {
   source      = "./modules/logs_bucket"
+   providers = {
+    aws = aws.use1
+  }
   bucket_name = var.log_bucket_name
 }
 
