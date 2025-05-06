@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITStep Project</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
             color: white;
             display: flex;
             flex-direction: column;
@@ -16,15 +19,35 @@
             align-items: center;
             height: 100vh;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
+
+        video.bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        h1, p, a {
+            z-index: 2;
+            position: relative;
+        }
+
         h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
         }
+
         p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
         }
+
         a {
             background: white;
             color: #4facfe;
@@ -34,6 +57,7 @@
             font-weight: bold;
             transition: background 0.3s, color 0.3s;
         }
+
         a:hover {
             background: #4facfe;
             color: white;
@@ -41,6 +65,11 @@
     </style>
 </head>
 <body>
+    <video class="bg-video" autoplay muted loop playsinline>
+        <source src="https://simple-site-20253004.s3.eu-north-1.amazonaws.com/nike.mp4" type="video/mp4">
+        Ваш браузер не підтримує відтворення відео.
+    </video>
+
     <h1>Ласкаво просимо на ITStep Project</h1>
     <p>Ваш новий сайт успішно працює через AWS!</p>
     <a href="#about">Дізнатися більше</a>
