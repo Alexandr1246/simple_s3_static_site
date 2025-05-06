@@ -41,5 +41,9 @@ variable "aws_account_id" {
   default     = "050451395507"
 }
 
+variable "cloudfront_oai_arn" {
+  description = "CloudFront Origin Access Identity ARN"
+  default     = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity/E25ZYR4CVUHJBN"
+}
 
 
