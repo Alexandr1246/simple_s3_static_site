@@ -83,7 +83,8 @@ jobs:
       - name: Upload index.html to S3
         run: |
           aws s3 cp ./site/index.html s3://${TF_VAR_bucket_name}/index.html
-
+          aws s3 cp ./site/nike.mp4 s3://${TF_VAR_bucket_name}/nike.mp4
+          
       - name: Показати CloudFront Domain Name
         run: terraform output cloudfront_domain_name
         working-directory: terraform    
