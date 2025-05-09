@@ -23,13 +23,13 @@ module "policy" {
 }
 
 
-#module "acm" {
-#  source                    = "./modules/acm"
-#  domain_name               = var.domain_name
-#  subject_alternative_names = ["www.${var.domain_name}"]
-#  region                    = var.region
-#  zone_id                   = module.route53.zone_id
-#}
+module "acm" {
+  source                    = "./modules/acm"
+  domain_name               = var.domain_name
+  subject_alternative_names = ["www.${var.domain_name}"]
+  region                    = var.region
+  zone_id                   = module.route53.zone_id
+}
 
 module "cloudfront" {
   source           = "./modules/cloudfront"
@@ -45,9 +45,9 @@ module "cloudfront" {
 #  source = "./modules/iam"
 #}
 
-#module "route53" {
-#  source         = "./modules/route53"
-#  domain_name    = var.domain_name
-#  cloudfront_dns = module.cloudfront.cloudfront_domain
-#  zone_id        = var.zone_id # або отримати динамічно, якщо модуль acm/route53 повертає його
-#}
+module "route53" {
+  source         = "./modules/route53"
+  domain_name    = var.domain_name
+  cloudfront_dns = module.cloudfront.cloudfront_domain
+  zone_id        = var.zone_id # або отримати динамічно, якщо модуль acm/route53 повертає його
+}

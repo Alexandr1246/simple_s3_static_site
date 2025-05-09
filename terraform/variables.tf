@@ -30,10 +30,10 @@ variable "region" {
   default = "us-east-1" # для ACM у CloudFront
 }
 
-#variable "zone_id" {
-#  type = string
-#  або передай через Terraform Cloud/TFVARS
-#}
+variable "zone_id" {
+  type = string
+  #або передай через Terraform Cloud/TFVARS
+}
 
 variable "aws_account_id" {
   description = "ID AWS акаунту, використовується для політик доступу"
