@@ -1,4 +1,4 @@
-output "domain_name" {
+output "cloudfront_domain" {
   value = aws_cloudfront_distribution.static_site_distribution.domain_name
   description = "Доменне ім'я CloudFront Distribution"
 }
