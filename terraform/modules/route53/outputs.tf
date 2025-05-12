@@ -7,5 +7,5 @@ output "name_servers" {
 }
 
 output "cloudfront_domain_name" {
-  value = module.cloudfront.cloudfront_domain
+  value = var.cloudfront_domain_name
 }
