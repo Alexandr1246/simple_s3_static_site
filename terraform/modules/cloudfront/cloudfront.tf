@@ -54,4 +54,5 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
   ssl_support_method       = "sni-only"
   minimum_protocol_version = "TLSv1.2_2021"
 }
+depends_on = [var.acm_certificate_validation_arn]
 }

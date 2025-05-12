@@ -39,6 +39,7 @@ module "cloudfront" {
   acm_certificate_arn = module.acm.acm_arn
   log_bucket_name  = var.log_bucket_name 
   log_bucket_domain  = "${module.logs_bucket.bucket}.s3.amazonaws.com"
+  acm_certificate_validation_arn = module.acm.acm_certificate_validation_arn
 }
 
 #module "iam" {

@@ -27,3 +27,7 @@ variable "log_bucket_domain" {
   description = "Full domain name of the S3 bucket to store CloudFront logs (e.g. logs-bucket.s3.amazonaws.com)"
   type        = string
 }
+variable "acm_certificate_validation_arn" {
+  description = "ARN ресурсу aws_acm_certificate_validation, щоб забезпечити правильний порядок створення"
+  type          = string
+}
