@@ -1,3 +1,8 @@
+data "aws_route53_zone" "main" {
+  name         = var.domain_name
+  private_zone = false
+}
+
 resource "aws_route53_record" "root" {
   zone_id = var.zone_id  # використовуємо переданий через змінну zone_id
   name    = var.domain_name

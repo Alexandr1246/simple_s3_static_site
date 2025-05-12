@@ -1,8 +1,7 @@
 output "zone_id" {
-  description = "Route53 Zone ID"
-  value       = var.zone_id 
+  value = data.aws_route53_zone.main.zone_id
 }
 
 output "name_servers" {
-  value = "Потрібно додати з api або data ресурсу, якщо потрібно"
+  value = data.aws_route53_zone.main.name_servers
 }
