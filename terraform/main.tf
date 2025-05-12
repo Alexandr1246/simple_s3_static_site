@@ -36,7 +36,7 @@ module "cloudfront" {
   bucket_name      = module.s3.bucket_regional_domain_name
   s3_origin_id     = module.s3.bucket
   domain_aliases   = ["itstep-project.online", "www.itstep-project.online"]
-  acm_certificate_arn = ""
+  acm_certificate_arn = module.acm.acm_arn
   log_bucket_name  = var.log_bucket_name 
   log_bucket_domain  = "${module.logs_bucket.bucket}.s3.amazonaws.com"
 }
