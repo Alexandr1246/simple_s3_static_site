@@ -49,6 +49,11 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
     Name = "static-site-cloudfront-distribution"
   }
 
+  aliases = [
+    "itstep-project.online",
+    "www.itstep-project.online"
+  ]
+
  viewer_certificate {
   acm_certificate_arn      = var.acm_certificate_arn
   ssl_support_method       = "sni-only"
