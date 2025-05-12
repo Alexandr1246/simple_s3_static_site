@@ -33,6 +33,6 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 }
 
 provider "aws" {
-  alias  = "us_east_1"
-  region = var.region
+  region = "us-east-1"
+  alias  = "use1"
 }
