@@ -45,5 +45,11 @@ variable "cloudfront_oai_arn" {
   description = "CloudFront Origin Access Identity ARN"
   default     = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity/E25ZYR4CVUHJBN"
 }
+variable "cloudfront_hosted_zone_id" {
+  description = "Hosted Zone ID для CloudFront (опційно)"
+  type        = string
+  default     = "Z2FDTNDATAQYW2"
+}
+
 
 
