@@ -65,6 +65,13 @@ jobs:
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-valid.log
+      
+      - name: Terraform Refresh
+        run: terraform refresh # Додано крок refresh
+        working-directory: terraform
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-refresh.log
 
       - name: Terraform Plan
         run: terraform plan
