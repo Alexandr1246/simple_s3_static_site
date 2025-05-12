@@ -46,9 +46,8 @@ module "cloudfront" {
 #}
 
 module "route53" {
-  source = "./modules/route53"
+  source                   = "./modules/route53"
   domain_name              = var.domain_name
-  zone_id                 = var.zone_id
-  cloudfront_domain_name  = module.cloudfront.cloudfront_domain
-  cloudfront_hosted_zone_id = var.cloudfront_hosted_zone_id  # ← Додай це
+  cloudfront_domain_name   = module.cloudfront.cloudfront_domain
+  cloudfront_hosted_zone_id = var.cloudfront_hosted_zone_id
 }

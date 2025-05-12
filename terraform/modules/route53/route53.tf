@@ -4,7 +4,7 @@ data "aws_route53_zone" "main" {
 }
 
 resource "aws_route53_record" "root" {
-  zone_id = var.zone_id  # використовуємо переданий через змінну zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = var.domain_name
   type    = "A"
 
@@ -16,7 +16,7 @@ resource "aws_route53_record" "root" {
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = var.zone_id  # використовуємо переданий через змінну zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
 
@@ -28,7 +28,7 @@ resource "aws_route53_record" "www" {
 }
 
 resource "aws_route53_record" "cloudfront_alias" {
-  zone_id = var.zone_id  # використовуємо переданий через змінну zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = var.domain_name
   type    = "A"
 

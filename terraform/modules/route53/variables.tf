@@ -3,11 +3,6 @@ variable "domain_name" {
   description = "Primary domain name"
 }
 
-variable "zone_id" {
-  type        = string
-  description = "Route53 Hosted Zone ID"
-}
-
 variable "cloudfront_domain_name" {
   type        = string
   description = "CloudFront distribution domain name"
