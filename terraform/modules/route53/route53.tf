@@ -1,27 +1,28 @@
-resource "aws_route53_zone" "main" {
-  name = "itstep-project.online"
+data "aws_route53_zone" "main" {
+  name         = var.domain_name
+  private_zone = false
 }
 
 resource "aws_route53_record" "root" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "itstep-project.online"
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = var.domain_name
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.static_site_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.static_site_distribution.hosted_zone_id
+    name                   = var.cloudfront_domain_name
+    zone_id                = var.cloudfront_hosted_zone_id
     evaluate_target_health = false
   }
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "www.itstep-project.online"
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "www.${var.domain_name}"
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.static_site_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.static_site_distribution.hosted_zone_id
+    name                   = var.cloudfront_domain_name
+    zone_id                = var.cloudfront_hosted_zone_id
     evaluate_target_health = false
   }
 }

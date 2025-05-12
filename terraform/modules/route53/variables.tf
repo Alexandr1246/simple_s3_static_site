@@ -1,14 +1,19 @@
 variable "domain_name" {
-  description = "Основне доменне ім’я для сайту (наприклад, itstep-project.online)"
   type        = string
-}
-
-variable "cloudfront_dns" {
-  description = "Доменне ім’я CloudFront, яке буде використовуватись у DNS записах"
-  type        = string
+  description = "Primary domain name"
 }
 
 variable "zone_id" {
-  description = "ID hosted zone в Route 53"
   type        = string
+  description = "Route53 Hosted Zone ID"
+}
+
+variable "cloudfront_domain_name" {
+  type        = string
+  description = "CloudFront distribution domain name"
+}
+
+variable "cloudfront_hosted_zone_id" {
+  type        = string
+  description = "CloudFront distribution hosted zone ID"
 }
