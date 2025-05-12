@@ -1,7 +1,7 @@
 resource "aws_acm_certificate" "cert" {
-  provider = aws.use1
-  domain_name       = "itstep-project.online"
-  validation_method = "DNS"
+  provider           = aws.use1
+  domain_name        = "itstep-project.online"
+  validation_method  = "DNS"
 
   subject_alternative_names = [
     "www.itstep-project.online"
@@ -21,11 +21,12 @@ resource "aws_route53_record" "cert_validation" {
     }
   }
 
-  zone_id = var.zone_id
-  name    = each.value.name
-  type    = each.value.type
-  records = [each.value.record]
-  ttl     = 300
+  zone_id         = var.zone_id
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  allow_overwrite = true
 }
 
 resource "aws_acm_certificate_validation" "cert_validation" {
