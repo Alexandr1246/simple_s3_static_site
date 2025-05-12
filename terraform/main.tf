@@ -25,6 +25,9 @@ module "policy" {
 
 module "acm" {
   source                    = "./modules/acm"
+   providers = {
+    aws = aws.use1
+  }
   domain_name               = var.domain_name
   subject_alternative_names = ["www.${var.domain_name}"]
   region                    = var.region
