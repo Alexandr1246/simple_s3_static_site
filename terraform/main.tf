@@ -48,6 +48,7 @@ module "cloudfront" {
 module "route53" {
   source         = "./modules/route53"
   domain_name    = var.domain_name
-  cloudfront_dns = module.cloudfront.cloudfront_domain
   zone_id        = var.zone_id # або отримати динамічно, якщо модуль acm/route53 повертає його
+  cloudfront_domain_name = module.cloudfront.cloudfront_domain_name  # Додайте цей параметр
+  cloudfront_hosted_zone_id = module.cloudfront.cloudfront_hosted_zone_id  # І цей
 }
