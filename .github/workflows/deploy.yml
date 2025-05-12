@@ -108,7 +108,11 @@ jobs:
           echo "::group::Terraform Validate Log"
           cat terraform/terraform-valid.log || echo "No validate log found"
           echo "::endgroup::"
-  
+         
+          echo "::group::Terraform Refresh Log" # Додано вивід логів для refresh
+          cat terraform/terraform-refresh.log || echo "No refresh log found"
+          echo "::endgroup::"
+
           echo "::group::Terraform Plan Log"
           cat terraform/terraform-plan.log || echo "No plan log found"
           echo "::endgroup::"
