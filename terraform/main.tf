@@ -1,11 +1,11 @@
 module "s3" {
-  source           = "./modules/s3"
+  source           = "./module-s3/s3"
   bucket_name      = var.bucket_name
   environment      = var.environment
 }
 
 module "logs_bucket" {
-  source = "./modules/logs_bucket"
+  source = "./module-s3/logs_bucket"
   providers = {
     aws = aws.use1
   }
@@ -13,7 +13,7 @@ module "logs_bucket" {
 }
 
 module "policy" {
-  source             = "./modules/policy"
+  source             = "./module-s3/policy"
   bucket_id          = module.s3.bucket_id
   bucket_arn         = module.s3.bucket_arn
   cloudfront_oai_arn = module.cloudfront.oai_arn
@@ -22,9 +22,8 @@ module "policy" {
   log_bucket_arn    = module.logs_bucket.arn
 }
 
-
 module "acm" {
-  source                    = "./modules/acm"
+  source                    = "./module-s3s/acm"
    providers = {
     aws = aws.use1
   }
@@ -35,7 +34,7 @@ module "acm" {
 }
 
 module "cloudfront" {
-  source           = "./modules/cloudfront"
+  source           = "./module-s3/cloudfront"
   bucket_name      = module.s3.bucket_regional_domain_name
   s3_origin_id     = module.s3.bucket
   domain_aliases   = ["itstep-project.online", "www.itstep-project.online"]
@@ -45,12 +44,8 @@ module "cloudfront" {
   acm_certificate_validation_arn = module.acm.acm_certificate_validation_arn
 }
 
-#module "iam" {
-#  source = "./modules/iam"
-#}
-
 module "route53" {
-  source                    = "./modules/route53"
+  source                    = "./module-s3/route53"
   domain_name               = var.domain_name
   cloudfront_domain_name    = module.cloudfront.cloudfront_domain
   cloudfront_hosted_zone_id = var.cloudfront_hosted_zone_id
