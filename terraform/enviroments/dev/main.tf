@@ -18,8 +18,8 @@ module "policy" {
   bucket_arn         = module.s3.bucket_arn
   cloudfront_oai_arn = module.cloudfront.oai_arn
   aws_account_id     = var.aws_account_id
-  log_bucket_name   = module.logs_bucket.bucket
-  log_bucket_arn    = module.logs_bucket.arn
+  log_bucket_name    = module.logs_bucket.bucket
+  log_bucket_arn     = module.logs_bucket.arn
 }
 
 module "acm" {
