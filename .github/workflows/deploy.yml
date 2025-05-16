@@ -48,7 +48,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -upgrade
-        working-directory: terraform
+        working-directory: terraform/environments/dev
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-init.log
@@ -57,32 +57,32 @@ jobs:
         if: ${{ steps.check_s3.outputs.exists == 'true' }}
         run: |
           terraform import module.s3.aws_s3_bucket.static_site $TF_VAR_bucket_name
-        working-directory: terraform
+        working-directory: terraform/environments/dev
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: terraform
+        working-directory: terraform/environments/dev
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-valid.log
       
       - name: Terraform Refresh
         run: terraform refresh # Додано крок refresh
-        working-directory: terraform
+        working-directory: terraform/environments/dev
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-refresh.log
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: terraform
+        working-directory: terraform/environments/dev
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-plan.log
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: terraform
+        working-directory: terraform/environments/dev
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-apply.log
@@ -96,7 +96,7 @@ jobs:
 
       - name: Показати CloudFront Domain Name
         run: terraform output cloudfront_domain_name
-        working-directory: terraform    
+        working-directory: terraform/environments/dev  
 
       - name: Show Terraform logs
         if: always()
