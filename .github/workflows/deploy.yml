@@ -66,6 +66,13 @@ jobs:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-valid.log
       
+      - name: Remove orphaned policy resource from state
+        run: |
+          terraform state list | grep log_bucket_policy && \
+          terraform state rm module.policy.aws_s3_bucket_policy.log_bucket_policy || \
+          echo "Nothing to remove"
+        working-directory: terraform/environments/dev    
+
       - name: Terraform Refresh
         run: terraform refresh # Додано крок refresh
         working-directory: terraform/environments/dev
