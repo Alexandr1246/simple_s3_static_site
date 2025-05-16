@@ -1,6 +1,6 @@
 resource "aws_s3_bucket_policy" "log_bucket_policy" {
   provider = aws.use1
-  bucket = aws_s3_bucket.logs_bucket.id
+  bucket   = aws_s3_bucket.logs_bucket.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -15,7 +15,7 @@ resource "aws_s3_bucket_policy" "log_bucket_policy" {
         Resource = "${aws_s3_bucket.logs_bucket.arn}/*"
         Condition = {
           StringEquals = {
-            "s3:x-amz-acl"      = "bucket-owner-full-control"
+            "s3:x-amz-acl"       = "bucket-owner-full-control"
             "aws:SourceAccount" = var.aws_account_id
           }
         }
@@ -27,7 +27,7 @@ resource "aws_s3_bucket_policy" "log_bucket_policy" {
           Service = "delivery.logs.amazonaws.com"
         }
         Action    = "s3:GetBucketAcl"
-        Resource = "${aws_s3_bucket.logs_bucket.arn}/*"
+        Resource  = aws_s3_bucket.logs_bucket.arn
       }
     ]
   })
