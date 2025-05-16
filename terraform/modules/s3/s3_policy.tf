@@ -1,6 +1,6 @@
 
 resource "aws_s3_bucket_policy" "static_site_policy" {
-  bucket = var.bucket_id
+  bucket  = aws_s3_bucket.static_site.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -12,7 +12,7 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
           AWS = var.cloudfront_oai_arn
         }
         Action   = "s3:GetObject"
-        Resource = "${var.bucket_arn}/*"
+        resource = "${aws_s3_bucket.static_site.arn}/*"
       }
     ]
   })

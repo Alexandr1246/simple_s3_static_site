@@ -52,9 +52,4 @@ variable "cloudfront_hosted_zone_id" {
   default     = "Z2FDTNDATAQYW2"
 }
 
-variable "log_bucket_arn" {
-  description = "ARN of the S3 bucket for CloudFront logs"
-  type        = string
-}
-
 

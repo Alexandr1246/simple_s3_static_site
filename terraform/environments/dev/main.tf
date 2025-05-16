@@ -24,7 +24,6 @@ module "logs_bucket" {
   providers                 = { aws = aws.use1 }
   log_bucket_name           = var.log_bucket_name
   aws_account_id            = var.aws_account_id
-  log_bucket_arn            = module.logs_bucket.arn
 }
 
 module "route53" {
@@ -39,8 +38,6 @@ module "s3" {
   bucket_name               = var.bucket_name
   environment               = var.environment
   cloudfront_oai_arn        = module.cloudfront.oai_arn
-  bucket_id                 = module.s3.bucket_id
-  bucket_arn                = module.s3.arn
 }
 
 #module "policy" {

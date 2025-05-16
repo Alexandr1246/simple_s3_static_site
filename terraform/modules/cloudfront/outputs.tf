@@ -12,3 +12,4 @@ output "cloudfront_hosted_zone_id" {
   value       = aws_cloudfront_distribution.static_site_distribution.hosted_zone_id
   description = "Hosted zone ID для CloudFront"
 }
+
