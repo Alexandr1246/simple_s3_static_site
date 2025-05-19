@@ -122,7 +122,8 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "ec2:DescribeSnapshots",  
           "ec2:DescribeInstanceCreditSpecifications",            
           "ec2:DescribeImages",  
-          "ec2:DescribeTags"
+          "ec2:DescribeTags",
+          "ec2:ImportKeyPair"
         ],
         Resource = "*"
       }
