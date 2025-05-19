@@ -19,6 +19,11 @@ module "cloudfront" {
   
 }
 
+module "ec2" {
+  source = "../../modules/ec2"
+  ssh_key_name = var.ssh_key_name
+}
+
 module "logs_bucket" {
   source                    = "../../modules/logs_bucket"
   providers                 = { aws = aws.use1 }
