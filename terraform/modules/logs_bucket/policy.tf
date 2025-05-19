@@ -15,7 +15,7 @@ resource "aws_s3_bucket_policy" "log_bucket_policy" {
         Resource = "${aws_s3_bucket.logs_bucket.arn}/*"
         Condition = {
           StringEquals = {
-            "s3:x-amz-acl"       = "bucket-owner-full-control"
+            "s3:x-amz-acl"      = "bucket-owner-full-control"
             "aws:SourceAccount" = var.aws_account_id
           }
         }
