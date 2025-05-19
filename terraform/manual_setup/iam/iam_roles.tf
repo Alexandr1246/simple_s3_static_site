@@ -7,7 +7,7 @@ resource "aws_iam_role" "github_oidc_role" {
       {
         Effect = "Allow",
         Principal = {
-          Federated = aws_iam_openid_connect_provider.github.arn
+        Federated = data.aws_iam_openid_connect_provider.github.arn
         },
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
@@ -21,16 +21,8 @@ resource "aws_iam_role" "github_oidc_role" {
 }
 
 
-resource "aws_iam_openid_connect_provider" "github" {
+data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
-
-  client_id_list = [
-    "sts.amazonaws.com"
-  ]
-
-  thumbprint_list = [
-    "6938fd4d98bab03faadb97b34396831e3780aea1"
-  ]
 }
 
 resource "aws_iam_role_policy" "github_oidc_role_policy" {
@@ -50,6 +42,42 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "acm:DescribeCertificate",
           "acm:ListTagsForCertificate",
           "route53:*"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2:CreateVpc",
+          "ec2:DeleteVpc",
+          "ec2:DescribeVpcs",
+          "ec2:CreateSubnet",
+          "ec2:DeleteSubnet",
+          "ec2:DescribeSubnets",
+          "ec2:CreateInternetGateway",
+          "ec2:AttachInternetGateway",
+          "ec2:DeleteInternetGateway",
+          "ec2:DescribeInternetGateways",
+          "ec2:CreateRouteTable",
+          "ec2:AssociateRouteTable",
+          "ec2:CreateRoute",
+          "ec2:DeleteRouteTable",
+          "ec2:DescribeRouteTables",
+          "ec2:ModifyVpcAttribute",
+          "ec2:CreateSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DeleteSecurityGroup",
+          "ec2:CreateTags",
+          "ec2:RunInstances",
+          "ec2:TerminateInstances",
+          "ec2:DescribeInstances",
+          "ec2:AllocateAddress",
+          "ec2:AssociateAddress",
+          "ec2:DescribeAddresses",
+          "ec2:DisassociateAddress",
+          "ec2:ReleaseAddress"
         ],
         Resource = "*"
       }
