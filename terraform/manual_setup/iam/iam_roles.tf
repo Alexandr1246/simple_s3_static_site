@@ -89,6 +89,7 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "ec2:CreateKeyPair",
           "ec2:DeleteKeyPair",
           "ec2:DescribeKeyPairs",
+          "ec2:ImportKeyPair",
 
           # --- Security groups ---
           "ec2:CreateSecurityGroup",
@@ -122,8 +123,8 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "ec2:DescribeSnapshots",  
           "ec2:DescribeInstanceCreditSpecifications",            
           "ec2:DescribeImages",  
-          "ec2:DescribeTags",
-          "ec2:ImportKeyPair"
+          "ec2:DescribeTags"
+          
         ],
         Resource = "*"
       }
