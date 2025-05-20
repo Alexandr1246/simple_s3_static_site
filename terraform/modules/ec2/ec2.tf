@@ -73,16 +73,6 @@ resource "aws_security_group" "k8s_sg" {
   }
 }
 
-resource "tls_private_key" "k8s_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "k8s_key_pair" {
-  key_name   = var.ssh_key_name
-  public_key = tls_private_key.k8s_key.public_key_openssh
-}
-
 # Master node — має публічну IP
 resource "aws_instance" "k8s_master_node" {
   ami                         = "ami-00f34bf9aeacdf007" 

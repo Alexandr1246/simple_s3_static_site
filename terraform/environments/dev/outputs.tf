@@ -31,4 +31,3 @@ output "k8s_node_public_ip" {
 output "worker_private_ip" {
   value = module.ec2.worker_private_ip
 }
-
