@@ -7,7 +7,7 @@ resource "aws_iam_role" "github_oidc_role" {
       {
         Effect = "Allow",
         Principal = {
-        Federated = data.aws_iam_openid_connect_provider.github.arn
+          Federated = data.aws_iam_openid_connect_provider.github.arn
         },
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
@@ -48,10 +48,36 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
       {
         Effect = "Allow",
         Action = [
-          # --- VPC & Networking ---
           "ec2:*"
         ],
         Resource = "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "iam:CreateRole",
+          "iam:GetRole",
+          "iam:DeleteRole",
+          "iam:PassRole",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:ListInstanceProfilesForRole",
+          "iam:CreateInstanceProfile",
+          "iam:AddRoleToInstanceProfile",
+          "iam:RemoveRoleFromInstanceProfile",
+          "iam:DeleteInstanceProfile",
+          "iam:TagRole",
+          "iam:UntagRole",
+          "iam:CreateOpenIDConnectProvider",
+          "iam:GetOpenIDConnectProvider",
+          "iam:DeleteOpenIDConnectProvider",
+          "iam:GetInstanceProfile" 
+        ],
+        "Resource": "*"
       }
     ]
   })
