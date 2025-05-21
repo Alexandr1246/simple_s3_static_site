@@ -75,7 +75,7 @@ resource "aws_security_group" "k8s_sg" {
 
 # Master node — має публічну IP
 resource "aws_instance" "k8s_master_node" {
-  ami                         = "ami-00f34bf9aeacdf007" 
+  ami                         = "ami-04542995864e26699" 
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.k8s_subnet.id
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
@@ -83,11 +83,13 @@ resource "aws_instance" "k8s_master_node" {
   key_name                    = var.ssh_key_name
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
 
-   user_data = <<-EOF
+  user_data = <<-EOF
               #!/bin/bash
-              sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-              systemctl enable amazon-ssm-agent
-              systemctl start amazon-ssm-agent
+              sudo apt update -y
+              sudo apt install -y snapd
+              sudo snap install amazon-ssm-agent --classic
+              sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+              sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
               EOF
 
   tags = {
@@ -97,7 +99,7 @@ resource "aws_instance" "k8s_master_node" {
 
 # Worker node — без публічної IP
 resource "aws_instance" "k8s_worker_node" {
-  ami                         = "ami-00f34bf9aeacdf007" 
+  ami                         = "ami-04542995864e26699" 
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.k8s_subnet.id
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
@@ -107,9 +109,11 @@ resource "aws_instance" "k8s_worker_node" {
   
   user_data = <<-EOF
               #!/bin/bash
-              sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-              systemctl enable amazon-ssm-agent
-              systemctl start amazon-ssm-agent
+              sudo apt update -y
+              sudo apt install -y snapd
+              sudo snap install amazon-ssm-agent --classic
+              sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+              sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
               EOF
 
   tags = {
