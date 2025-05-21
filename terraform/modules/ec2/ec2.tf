@@ -53,7 +53,6 @@ resource "aws_security_group" "k8s_sg" {
   description = "Allow SSH and Kubernetes internal traffic"
   vpc_id      = aws_vpc.k8s_vpc.id
 
-  # Існуюче правило для SSH
   ingress {
     description = "Allow SSH from anywhere"
     from_port   = 22
@@ -62,16 +61,14 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # НОВЕ, КРИТИЧНЕ ПРАВИЛО: Дозволити весь трафік всередині цієї Security Group
   ingress {
     description = "Allow all traffic within the K8s cluster"
-    from_port   = 0           # Дозволити всі порти
-    to_port     = 0           # Дозволити всі порти
-    protocol    = "-1"        # Дозволити всі протоколи (TCP, UDP, ICMP)
-    security_groups = [aws_security_group.k8s_sg.id] # Дозволяє трафік з інстансів, що мають цю ж SG
+    from_port   = 0           
+    to_port     = 0          
+    protocol    = "-1"       
+    security_groups = [aws_security_group.k8s_sg.id] 
   }
 
-  # Існуюче правило для вихідного трафіку (залиште як є)
   egress {
     from_port   = 0
     to_port     = 0
