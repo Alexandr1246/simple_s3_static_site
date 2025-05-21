@@ -50,9 +50,10 @@ resource "aws_route_table_association" "k8s_route_table_assoc" {
 
 resource "aws_security_group" "k8s_sg" {
   name        = "k8s-ssh-sg"
-  description = "Allow SSH"
+  description = "Allow SSH and Kubernetes internal traffic"
   vpc_id      = aws_vpc.k8s_vpc.id
 
+  # Існуюче правило для SSH
   ingress {
     description = "Allow SSH from anywhere"
     from_port   = 22
@@ -61,6 +62,16 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # НОВЕ, КРИТИЧНЕ ПРАВИЛО: Дозволити весь трафік всередині цієї Security Group
+  ingress {
+    description = "Allow all traffic within the K8s cluster"
+    from_port   = 0           # Дозволити всі порти
+    to_port     = 0           # Дозволити всі порти
+    protocol    = "-1"        # Дозволити всі протоколи (TCP, UDP, ICMP)
+    security_groups = [aws_security_group.k8s_sg.id] # Дозволяє трафік з інстансів, що мають цю ж SG
+  }
+
+  # Існуюче правило для вихідного трафіку (залиште як є)
   egress {
     from_port   = 0
     to_port     = 0
@@ -73,7 +84,6 @@ resource "aws_security_group" "k8s_sg" {
   }
 }
 
-# Master node — має публічну IP
 resource "aws_instance" "k8s_master_node" {
   ami                         = "ami-04542995864e26699" 
   instance_type               = "t3.medium"
@@ -90,6 +100,16 @@ resource "aws_instance" "k8s_master_node" {
               sudo snap install amazon-ssm-agent --classic
               sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
               sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+              echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
+              sudo sysctl -p
+
+              sudo swapoff -a
+              sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+              sudo ufw disable || true 
+              sudo systemctl stop firewalld || true
+              sudo systemctl disable firewalld || true
               EOF
 
   tags = {
@@ -97,7 +117,6 @@ resource "aws_instance" "k8s_master_node" {
   }
 }
 
-# Worker node — без публічної IP
 resource "aws_instance" "k8s_worker_node" {
   ami                         = "ami-04542995864e26699" 
   instance_type               = "t3.medium"
@@ -114,6 +133,16 @@ resource "aws_instance" "k8s_worker_node" {
               sudo snap install amazon-ssm-agent --classic
               sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
               sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+              echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
+              sudo sysctl -p
+
+              sudo swapoff -a
+              sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+              sudo ufw disable || true 
+              sudo systemctl stop firewalld || true
+              sudo systemctl disable firewalld || true
               EOF
 
   tags = {
