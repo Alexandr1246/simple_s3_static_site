@@ -76,7 +76,7 @@ resource "aws_security_group" "k8s_sg" {
 # Master node — має публічну IP
 resource "aws_instance" "k8s_master_node" {
   ami                         = "ami-04542995864e26699" 
-  instance_type               = "t3.micro"
+  instance_type               = "t3.medium"
   subnet_id                   = aws_subnet.k8s_subnet.id
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = true
@@ -100,7 +100,7 @@ resource "aws_instance" "k8s_master_node" {
 # Worker node — без публічної IP
 resource "aws_instance" "k8s_worker_node" {
   ami                         = "ami-04542995864e26699" 
-  instance_type               = "t3.micro"
+  instance_type               = "t3.medium"
   subnet_id                   = aws_subnet.k8s_subnet.id
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = true
