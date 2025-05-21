@@ -101,7 +101,7 @@ resource "aws_instance" "k8s_worker_node" {
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.k8s_subnet.id
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   key_name                    = var.ssh_key_name
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
   
