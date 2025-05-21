@@ -32,7 +32,7 @@ variable "region" {
 
 #variable "zone_id" {
 #  type = string
-  #або передай через Terraform Cloud/TFVARS
+#або передай через Terraform Cloud/TFVARS
 #}
 
 variable "aws_account_id" {
@@ -55,5 +55,5 @@ variable "cloudfront_hosted_zone_id" {
 variable "ssh_key_name" {
   description = "Name of the existing EC2 Key Pair to use for SSH"
   type        = string
-  default = "kuber-key-ec2"
+  default     = "kuber-key-ec2"
 }

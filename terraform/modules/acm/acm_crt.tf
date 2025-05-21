@@ -1,7 +1,7 @@
 resource "aws_acm_certificate" "cert" {
-  provider           = aws.use1
-  domain_name        = "itstep-project.online"
-  validation_method  = "DNS"
+  provider          = aws.use1
+  domain_name       = "itstep-project.online"
+  validation_method = "DNS"
 
   subject_alternative_names = [
     "www.itstep-project.online"

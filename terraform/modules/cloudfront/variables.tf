@@ -29,5 +29,5 @@ variable "log_bucket_domain" {
 }
 variable "acm_certificate_validation_arn" {
   description = "ARN ресурсу aws_acm_certificate_validation, щоб забезпечити правильний порядок створення"
-  type          = string
+  type        = string
 }

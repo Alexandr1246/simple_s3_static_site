@@ -53,8 +53,8 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
         Resource = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "iam:CreateRole",
           "iam:GetRole",
           "iam:DeleteRole",
@@ -75,9 +75,9 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "iam:CreateOpenIDConnectProvider",
           "iam:GetOpenIDConnectProvider",
           "iam:DeleteOpenIDConnectProvider",
-          "iam:GetInstanceProfile" 
+          "iam:GetInstanceProfile"
         ],
-        "Resource": "*"
+        "Resource" : "*"
       }
     ]
   })
