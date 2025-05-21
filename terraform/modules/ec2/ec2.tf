@@ -81,6 +81,14 @@ resource "aws_instance" "k8s_master_node" {
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = true
   key_name                    = var.ssh_key_name
+  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+
+   user_data = <<-EOF
+              #!/bin/bash
+              sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+              systemctl enable amazon-ssm-agent
+              systemctl start amazon-ssm-agent
+              EOF
 
   tags = {
     Name = "k8s-master"
@@ -95,6 +103,14 @@ resource "aws_instance" "k8s_worker_node" {
   vpc_security_group_ids      = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = false
   key_name                    = var.ssh_key_name
+  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+  
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+              systemctl enable amazon-ssm-agent
+              systemctl start amazon-ssm-agent
+              EOF
 
   tags = {
     Name = "k8s-worker"
