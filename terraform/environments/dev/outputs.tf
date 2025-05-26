@@ -24,10 +24,10 @@ output "certificate_domain_validation_options" {
   value = module.acm.domain_validation_options
 }
 
-output "k8s_node_public_ip" {
-  value = module.ec2.k8s_node_public_ip
-}
+#output "k8s_node_public_ip" {
+#  value = module.ec2.k8s_node_public_ip
+#}
 
-output "worker_private_ip" {
-  value = module.ec2.worker_private_ip
-}
+#output "worker_private_ip" {
+#  value = module.ec2.worker_private_ip
+#}
