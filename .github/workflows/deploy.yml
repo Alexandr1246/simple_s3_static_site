@@ -98,6 +98,9 @@ jobs:
         run: terraform output cloudfront_domain_name
         working-directory: terraform/environments/dev  
 
+      - name: List Terraform state
+        run: terraform state list
+
       - name: Show Terraform logs
         if: always()
         run: |
