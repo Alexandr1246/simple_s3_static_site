@@ -22,5 +22,6 @@ resource "aws_iam_role_policy_attachment" "ssm_attach" {
 
 resource "aws_iam_instance_profile" "ssm_instance_profile" {
   name = "ec2-ssm-instance-profile"
+  
   role = aws_iam_role.ssm_ec2_role.name
 }
