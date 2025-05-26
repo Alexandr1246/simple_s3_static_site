@@ -28,7 +28,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Destroy ASG Master
-        run: terraform destroy -auto-approve -target=module.asg_master
+        run: terraform destroy -auto-approve -target=module.ec2.module.asg_master
 
       - name: Terraform Destroy ASG Worker
-        run: terraform destroy -auto-approve -target=module.asg_worker
+        run: terraform destroy -auto-approve -target=module.ec2.module.asg_worker
