@@ -1,4 +1,4 @@
-name: Deploy Infrastructure
+name: Deploy All Infrastructure
 
 on:
   pull_request:
@@ -101,7 +101,7 @@ jobs:
       - name: List Terraform state
         run: terraform state list
         working-directory: terraform/environments/dev
-        
+
       - name: Show Terraform logs
         if: always()
         run: |

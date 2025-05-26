@@ -1,4 +1,4 @@
-name: Destroy EC2 ASG nodes
+name: Destroy K8S Module
 
 on:
   workflow_dispatch:
