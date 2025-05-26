@@ -30,8 +30,7 @@ jobs:
       - name: Init Terraform
         run: terraform init
 
-      - name: Destroy only EC2 Auto Scaling Groups
-        run: |
-          terraform destroy -auto-approve \
-            -target=module.ec2.module.asg_master \
-            -target=module.ec2.module.asg_worker
+      - name: Terraform Destroy ASG modules
+        run: terraform destroy -auto-approve \
+          -target=module.asg_master \
+          -target=module.asg_worker
