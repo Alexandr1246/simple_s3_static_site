@@ -55,6 +55,23 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
       {
         "Effect" : "Allow",
         "Action" : [
+          "autoscaling:*"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "iam:CreateServiceLinkedRole",
+        "Resource" : "arn:aws:iam::*:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+        "Condition" : {
+          "StringEquals" : {
+            "iam:AWSServiceName" : "autoscaling.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "iam:CreateRole",
           "iam:GetRole",
           "iam:DeleteRole",
