@@ -4,34 +4,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  destroy-ec2:
+  destroy:
     runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write
-      contents: read
-
-    env:
-      AWS_REGION: eu-north-1
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials via OIDC
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: eu-north-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Init Terraform
+      - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Destroy ASG master
+      - name: Terraform Destroy ASG Master
         run: terraform destroy -auto-approve -target=module.asg_master
 
-      - name: Terraform Destroy ASG worker
+      - name: Terraform Destroy ASG Worker
         run: terraform destroy -auto-approve -target=module.asg_worker
