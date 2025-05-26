@@ -52,7 +52,12 @@ jobs:
         env:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-init.log
+      
+      - name: Import existing IAM role into state
+        run: terraform import module.ec2.aws_iam_role.ssm_ec2_role ec2-ssm-role
+        working-directory: terraform/environments/dev
 
+        
       - name: Import existing S3 bucket into state
         if: ${{ steps.check_s3.outputs.exists == 'true' }}
         run: |
