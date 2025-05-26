@@ -19,7 +19,7 @@ module "cloudfront" {
 
 }
 
-module "k8s" {
+module "ec2" {
   source       = "../../modules/k8s"
   ssh_key_name = var.ssh_key_name
 }
