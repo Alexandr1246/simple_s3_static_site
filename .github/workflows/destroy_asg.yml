@@ -1,0 +1,37 @@
+name: Destroy EC2 ASG nodes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy-ec2:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      AWS_REGION: eu-north-1
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Init Terraform
+        run: terraform init
+
+      - name: Destroy only EC2 Auto Scaling Groups
+        run: |
+          terraform destroy -auto-approve \
+            -target=module.ec2.module.asg_master \
+            -target=module.ec2.module.asg_worker
