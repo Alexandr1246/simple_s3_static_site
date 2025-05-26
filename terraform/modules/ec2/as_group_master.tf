@@ -1,6 +1,5 @@
 module "asg_master" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  version = "latest"
 
   name                      = "k8s-master-asg"
   min_size                  = 1
