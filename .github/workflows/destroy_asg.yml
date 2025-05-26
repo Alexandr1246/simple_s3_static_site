@@ -30,7 +30,8 @@ jobs:
       - name: Init Terraform
         run: terraform init
 
-      - name: Terraform Destroy ASG modules
-        run: terraform destroy -auto-approve \
-          -target=module.asg_master \
-          -target=module.asg_worker
+      - name: Terraform Destroy ASG master
+        run: terraform destroy -auto-approve -target=module.asg_master
+
+      - name: Terraform Destroy ASG worker
+        run: terraform destroy -auto-approve -target=module.asg_worker
