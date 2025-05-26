@@ -23,12 +23,17 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.4
 
       - name: Terraform Init
         run: terraform init
+        working-directory: terraform/environments/dev
 
       - name: Terraform Destroy ASG Master
-        run: terraform destroy -auto-approve -target=modules.k8s.k8s_kontrolplane
+        run: terraform destroy -auto-approve -target=module.ec2.module.asg_master.aws_autoscaling_group.this[0]
+        working-directory: terraform/environments/dev
 
       - name: Terraform Destroy ASG Worker
-        run: terraform destroy -auto-approve -target=modules.k8s.k8s_node
+        run: terraform destroy -auto-approve -target=module.ec2.module.asg_worker.aws_autoscaling_group.this[0]
+        working-directory: terraform/environments/dev
