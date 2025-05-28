@@ -22,6 +22,7 @@ module "cloudfront" {
 module "k8s" {
   source       = "../../modules/k8s"
   ssh_key_name = var.ssh_key_name
+  aws_account_id  = var.aws_account_id
 }
 
 module "logs_bucket" {

@@ -1,6 +1,6 @@
 
 module "asg_worker" {
-  source  = "terraform-aws-modules/autoscaling/aws"
+  source = "terraform-aws-modules/autoscaling/aws"
 
   name                      = "k8s-worker-asg"
   min_size                  = 1
@@ -8,8 +8,8 @@ module "asg_worker" {
   desired_capacity          = 1
   wait_for_capacity_timeout = 0
   health_check_type         = "EC2"
-  vpc_zone_identifier = [aws_subnet.k8s_subnet.id]
-  security_groups     = [aws_security_group.k8s_sg.id]
+  vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
+  security_groups           = [aws_security_group.k8s_sg.id]
 
   launch_template_name        = "k8s-worker-lt"
   launch_template_description = "Launch template for Kubernetes worker nodes"
@@ -24,7 +24,7 @@ module "asg_worker" {
   create_iam_instance_profile = false
   iam_instance_profile_name   = aws_iam_instance_profile.ssm_instance_profile.name
 
-  
+
   user_data = base64encode(<<-EOF
     #!/bin/bash
     # install ssm-agent

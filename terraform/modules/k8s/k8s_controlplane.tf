@@ -49,7 +49,7 @@ resource "aws_security_group" "k8s_sg" {
 }
 
 module "asg_master" {
-  source  = "terraform-aws-modules/autoscaling/aws"
+  source = "terraform-aws-modules/autoscaling/aws"
 
   name                      = "k8s-master-asg"
   min_size                  = 1
@@ -117,9 +117,9 @@ module "asg_master" {
     kubeadm init --pod-network-cidr=10.244.0.0/16
 
     # Створюємо конфіг для kubectl
-    mkdir -p $HOME/.kube
-    cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    chown $(id -u):$(id -g) $HOME/.kube/config
+    mkdir -p /root/.kube
+    cp -i /etc/kubernetes/admin.conf /root/.kube/config
+    chown root:root /root/.kube/config
     kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
     
     # Створюємо join команду і зберігаємо її в Parameter Store

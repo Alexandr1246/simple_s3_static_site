@@ -3,3 +3,9 @@ variable "ssh_key_name" {
   type        = string
   default     = "kuber-key-ec2"
 }
+
+variable "aws_account_id" {
+  description = "ID AWS акаунту, використовується для політик доступу"
+  type        = string
+  default     = "050451395507"
+}
