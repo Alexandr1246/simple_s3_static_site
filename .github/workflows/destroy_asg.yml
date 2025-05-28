@@ -82,6 +82,11 @@ jobs:
           terraform state list
         working-directory: terraform/environments/dev
 
+      - name: Remove S3 bucket resource from Terraform state
+        run: |
+          terraform state rm module.ec2.aws_s3_bucket.static_site || true
+        working-directory: terraform/environments/dev    
+
       - name: Final Destroy (everything else)
         run: terraform destroy -auto-approve
         working-directory: terraform/environments/dev
