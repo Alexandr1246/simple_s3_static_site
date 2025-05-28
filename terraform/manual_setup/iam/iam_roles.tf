@@ -40,6 +40,7 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "acm:RequestCertificate",
           "acm:AddTagsToCertificate",
           "acm:DescribeCertificate",
+          "acm:DeleteCertificate",
           "acm:ListTagsForCertificate",
           "route53:*"
         ],
