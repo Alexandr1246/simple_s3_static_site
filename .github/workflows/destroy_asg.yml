@@ -30,6 +30,58 @@ jobs:
         run: terraform init
         working-directory: terraform/environments/dev
 
-      - name: Terraform Init
-        run: terraform destroy -force
+      - name: Destroy ASG Master
+        run: terraform destroy -auto-approve -target=module.ec2.module.asg_master.aws_autoscaling_group.this[0]
+        working-directory: terraform/environments/dev
+
+      - name: Destroy ASG Worker
+        run: terraform destroy -auto-approve -target=module.ec2.module.asg_worker.aws_autoscaling_group.this[0]
+        working-directory: terraform/environments/dev
+
+      - name: Destroy EC2 Module
+        run: terraform destroy -auto-approve -target=module.ec2
+        working-directory: terraform/environments/dev
+
+      - name: Destroy K8S Module
+        run: terraform destroy -auto-approve -target=module.k8s
+        working-directory: terraform/environments/dev
+
+      - name: Empty all S3 buckets before destroy
+        run: |
+          BUCKETS=("simple-site-20253004")
+
+          for BUCKET in "${BUCKETS[@]}"; do
+            echo "Cleaning bucket: $BUCKET"
+
+            aws s3api list-object-versions --bucket $BUCKET \
+              --query="{Objects: Versions[].{Key:Key,VersionId:VersionId}}" \
+              > delete.json || true
+
+            aws s3api delete-objects --bucket $BUCKET \
+              --delete file://delete.json || true
+
+            aws s3api list-object-versions --bucket $BUCKET \
+              --query="{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}" \
+              > delete_markers.json || true
+
+            aws s3api delete-objects --bucket $BUCKET \
+              --delete file://delete_markers.json || true
+          done
+
+      - name: Delete S3 buckets via AWS CLI
+        run: |
+          BUCKETS=("simple-site-20253004")
+
+          for BUCKET in "${BUCKETS[@]}"; do
+            echo "Deleting bucket: $BUCKET"
+            aws s3api delete-bucket --bucket $BUCKET --region eu-north-1 || true
+          done
+
+      - name: Remove S3 bucket resource from Terraform state
+        run: |
+          terraform state rm module.s3.aws_s3_bucket.static_site || true
+        working-directory: terraform/environments/dev
+
+      - name: Final Destroy (everything else)
+        run: terraform destroy -auto-approve
         working-directory: terraform/environments/dev
