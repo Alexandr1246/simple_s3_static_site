@@ -77,9 +77,8 @@ jobs:
             aws s3api delete-bucket --bucket $BUCKET --region eu-north-1 || true
           done
 
-      - name: State list
-        run: |
-          terraform state list
+      - name: Show current terraform workspace
+        run: terraform workspace show
         working-directory: terraform/environments/dev
 
       - name: Remove S3 bucket resource from Terraform state
