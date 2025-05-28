@@ -1,0 +1,57 @@
+name: Destroy All Infrastructure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
+          aws-region: eu-north-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.4
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform/environments/dev
+
+      - name: Empty all S3 buckets before destroy
+        run: |
+          BUCKETS=("simple-site-20253004")
+          for BUCKET in "${BUCKETS[@]}"; do
+            echo "Cleaning bucket: $BUCKET"
+            aws s3api list-object-versions --bucket $BUCKET \
+              --query="{Objects: Versions[].{Key:Key,VersionId:VersionId}}" > delete.json || true
+            aws s3api delete-objects --bucket $BUCKET --delete file://delete.json || true
+
+            aws s3api list-object-versions --bucket $BUCKET \
+              --query="{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}" > delete_markers.json || true
+            aws s3api delete-objects --bucket $BUCKET --delete file://delete_markers.json || true
+          done
+
+      - name: Delete S3 buckets via AWS CLI
+        run: |
+          BUCKETS=("simple-site-20253004")
+          for BUCKET in "${BUCKETS[@]}"; do
+            echo "Deleting bucket: $BUCKET"
+            aws s3api delete-bucket --bucket $BUCKET --region eu-north-1 || true
+          done
+
+      - name: Destroy entire Terraform infrastructure
+        run: terraform destroy -auto-approve
+        working-directory: terraform/environments/dev
