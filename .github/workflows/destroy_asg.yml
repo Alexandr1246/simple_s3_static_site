@@ -1,10 +1,10 @@
-name: Destroy K8S Module
+name: Destroy K8S Infrastructure
 
 on:
   workflow_dispatch:
 
 jobs:
-  destroy-ec2:
+  destroy:
     runs-on: ubuntu-latest
 
     permissions:
@@ -12,7 +12,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -30,10 +30,22 @@ jobs:
         run: terraform init
         working-directory: terraform/environments/dev
 
-      - name: Terraform Destroy ASG Master
+      - name: Destroy ASG Master
         run: terraform destroy -auto-approve -target=module.ec2.module.asg_master.aws_autoscaling_group.this[0]
         working-directory: terraform/environments/dev
 
-      - name: Terraform Destroy ASG Worker
+      - name: Destroy ASG Worker
         run: terraform destroy -auto-approve -target=module.ec2.module.asg_worker.aws_autoscaling_group.this[0]
+        working-directory: terraform/environments/dev
+
+      - name: Destroy EC2 Module
+        run: terraform destroy -auto-approve -target=module.ec2
+        working-directory: terraform/environments/dev
+
+      - name: Destroy K8S Module
+        run: terraform destroy -auto-approve -target=module.k8s
+        working-directory: terraform/environments/dev
+
+      - name: Final Destroy (everything else)
+        run: terraform destroy -auto-approve
         working-directory: terraform/environments/dev
