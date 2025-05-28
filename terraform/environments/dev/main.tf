@@ -25,12 +25,12 @@ module "k8s" {
   aws_account_id  = var.aws_account_id
 }
 
-module "logs_bucket" {
-  source          = "../../modules/logs_bucket"
-  providers       = { aws = aws.use1 }
-  log_bucket_name = var.log_bucket_name
-  aws_account_id  = var.aws_account_id
-}
+#module "logs_bucket" {
+#  source          = "../../modules/logs_bucket"
+#  providers       = { aws = aws.use1 }
+#  log_bucket_name = var.log_bucket_name
+#  aws_account_id  = var.aws_account_id
+#}
 
 #module "route53" {
 #  source                    = "../../modules/route53"
