@@ -63,7 +63,21 @@ module "asg_worker" {
     sudo apt-get install -y kubelet kubeadm kubectl
     sudo apt-mark hold kubelet kubeadm kubectl
     sudo systemctl enable --now kubelet
-  EOF
+    
+    set -e
+
+    # Отримуємо join команду з Parameter Store
+    JOIN_COMMAND=$(aws ssm get-parameter \
+    --name "/k8s/join-command" \
+    --with-decryption \
+    --query "Parameter.Value" \
+    --output text \
+    --region eu-north-1)
+
+    # Долучаємося до кластеру
+    $JOIN_COMMAND
+    
+    EOF
   )
 
   block_device_mappings = [

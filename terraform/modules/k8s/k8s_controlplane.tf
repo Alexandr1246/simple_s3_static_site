@@ -110,7 +110,27 @@ module "asg_master" {
     sudo apt-get install -y kubelet kubeadm kubectl
     sudo apt-mark hold kubelet kubeadm kubectl
     sudo systemctl enable --now kubelet
-  EOF
+
+    set -e
+
+    # Ініціалізуємо кластер
+    kubeadm init --pod-network-cidr=10.244.0.0/16
+
+    # Створюємо конфіг для kubectl
+    mkdir -p $HOME/.kube
+    cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    chown $(id -u):$(id -g) $HOME/.kube/config
+    kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+    
+    # Створюємо join команду і зберігаємо її в Parameter Store
+    kubeadm token create --print-join-command > /tmp/join.sh
+    aws ssm put-parameter \
+    --name "/k8s/join-command" \
+    --type "String" \
+    --value "$(cat /tmp/join.sh)" \
+    --overwrite \
+    --region eu-north-1
+    EOF
   )
 
   security_groups = [aws_security_group.k8s_sg.id]
