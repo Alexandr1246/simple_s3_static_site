@@ -103,11 +103,16 @@ module "asg_master" {
   health_check_type         = "EC2"
   vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
 
-  launch_template_id      = aws_launch_template.master_lt.id
-  launch_template_version = aws_launch_template.master_lt.default_version
+  launch_template_id        = aws_launch_template.master_lt.id
+  launch_template_version   = aws_launch_template.master_lt.default_version
 
-  ebs_optimized     = true
-  enable_monitoring = true
+  # ADD THIS LINE:
+  #instance_type             = aws_launch_template.master_lt.instance_type 
+  # OR simply:
+  instance_type             = "t3.medium" # If you want to hardcode it, but referencing the LT is better practice
+
+  ebs_optimized             = true
+  enable_monitoring         = true
 
   tags = {
     Name        = "k8s-master"
