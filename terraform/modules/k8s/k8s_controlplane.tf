@@ -1,79 +1,30 @@
-resource "aws_vpc" "k8s_vpc" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "k8s-vpc"
-  }
-}
+resource "aws_launch_template" "master_lt" {
+  name_prefix   = "k8s-master-"
+  image_id      = "ami-04542995864e26699"
+  instance_type = "t3.medium"
+  key_name      = var.ssh_key_name
 
-resource "aws_subnet" "k8s_subnet" {
-  vpc_id            = aws_vpc.k8s_vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "eu-north-1a"
-  tags = {
-    Name = "k8s-subnet"
-  }
-}
-
-resource "aws_security_group" "k8s_sg" {
-  name        = "k8s-sg"
-  description = "Security group for Kubernetes nodes"
-  vpc_id      = aws_vpc.k8s_vpc.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SSH access"
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ssm_instance_profile.name
   }
 
-  ingress {
-    from_port   = 6443
-    to_port     = 6443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Kubernetes API Server"
+  network_interfaces {
+    associate_public_ip_address = true
+    subnet_id                   = aws_subnet.k8s_subnet.id
+    security_groups             = [aws_security_group.k8s_sg.id]
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow all outbound traffic"
+   block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      delete_on_termination = true
+      encrypted             = true
+      volume_size           = 20
+      volume_type           = "gp2"
+    }
   }
-
-  tags = {
-    Name = "k8s-sg"
-  }
-}
-
-module "asg_master" {
-  source = "terraform-aws-modules/autoscaling/aws"
-
-  name                      = "k8s-master-asg"
-  min_size                  = 1
-  max_size                  = 1
-  desired_capacity          = 1
-  wait_for_capacity_timeout = 0
-  health_check_type         = "EC2"
-  vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
-
-  launch_template_name        = "k8s-master-lt"
-  launch_template_description = "Launch template for Kubernetes master node"
-  update_default_version      = true
-
-  image_id          = "ami-04542995864e26699"
-  instance_type     = "t3.medium"
-  ebs_optimized     = true
-  enable_monitoring = true
-  key_name          = var.ssh_key_name
-
-  create_iam_instance_profile = false
-  iam_instance_profile_name   = aws_iam_instance_profile.ssm_instance_profile.name
 
   user_data = base64encode(<<-EOF
-    #!/bin/bash
     # install ssm-agent
     sudo apt update -y
     sudo apt install -y snapd
@@ -133,19 +84,31 @@ module "asg_master" {
     EOF
   )
 
-  security_groups = [aws_security_group.k8s_sg.id]
-
-  block_device_mappings = [
-    {
-      device_name = "/dev/xvda"
-      ebs = {
-        delete_on_termination = true
-        encrypted             = true
-        volume_size           = 20
-        volume_type           = "gp2"
-      }
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "k8s-master"
     }
-  ]
+  }
+}
+
+module "asg_master" {
+  source = "terraform-aws-modules/autoscaling/aws"
+
+  name                      = "k8s-master-asg"
+  min_size                  = 1
+  max_size                  = 1
+  desired_capacity          = 1
+  wait_for_capacity_timeout = 0
+  health_check_type         = "EC2"
+  vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
+
+  launch_template_id = aws_launch_template.master_lt.id
+  launch_template_description = "Launch template for Kubernetes master node"
+  update_default_version      = true
+
+  ebs_optimized     = true
+  enable_monitoring = true
 
   tags = {
     Name        = "k8s-master"
