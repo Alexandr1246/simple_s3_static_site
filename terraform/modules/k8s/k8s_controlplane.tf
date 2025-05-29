@@ -1,30 +1,35 @@
-resource "aws_launch_template" "master_lt" {
-  name_prefix   = "k8s-master-"
-  image_id      = "ami-04542995864e26699"
-  instance_type = "t3.medium"
-  key_name      = var.ssh_key_name
+module "asg_master" {
+  source  = "terraform-aws-modules/autoscaling/aws"
 
-  iam_instance_profile {
-    name = aws_iam_instance_profile.ssm_instance_profile.name
-  }
+  name                      = "k8s-master-asg"
+  min_size                  = 1
+  max_size                  = 1
+  desired_capacity          = 1
+  wait_for_capacity_timeout = 0
+  health_check_type         = "EC2"
+  vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
+  security_groups           = [aws_security_group.k8s_sg.id] 
 
-  network_interfaces {
-    associate_public_ip_address = true
-    subnet_id                   = aws_subnet.k8s_subnet.id
-    security_groups             = [aws_security_group.k8s_sg.id]
-  }
+  image_id                  = "ami-04542995864e26699" 
+  instance_type             = "t3.medium"          
+  key_name                  = var.ssh_key_name     
 
-   block_device_mappings {
-    device_name = "/dev/xvda"
-    ebs {
-      delete_on_termination = true
-      encrypted             = true
-      volume_size           = 20
-      volume_type           = "gp2"
+  create_iam_instance_profile = false 
+  iam_instance_profile_name = aws_iam_instance_profile.ssm_instance_profile.name 
+
+  block_device_mappings = [
+    {
+      device_name = "/dev/xvda"
+      ebs = {
+        delete_on_termination = true
+        encrypted             = true
+        volume_size           = 20
+        volume_type           = "gp2"
+      }
     }
-  }
+  ]
 
-  user_data = base64encode(<<-EOF
+    user_data = base64encode(<<-EOF
     # install ssm-agent
     sudo apt update -y
     sudo apt install -y snapd
@@ -83,33 +88,6 @@ resource "aws_launch_template" "master_lt" {
     --region eu-north-1
     EOF
   )
-
-  tag_specifications {
-    resource_type = "instance"
-    tags = {
-      Name = "k8s-master"
-    }
-  }
-}
-
-module "asg_master" {
-  source  = "terraform-aws-modules/autoscaling/aws"
-
-  name                      = "k8s-master-asg"
-  min_size                  = 1
-  max_size                  = 1
-  desired_capacity          = 1
-  wait_for_capacity_timeout = 0
-  health_check_type         = "EC2"
-  vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
-
-  launch_template_id        = aws_launch_template.master_lt.id
-  launch_template_version   = aws_launch_template.master_lt.default_version
-
-  # ADD THIS LINE:
-  #instance_type             = aws_launch_template.master_lt.instance_type 
-  # OR simply:
-  instance_type             = "t3.medium" # If you want to hardcode it, but referencing the LT is better practice
 
   ebs_optimized             = true
   enable_monitoring         = true
