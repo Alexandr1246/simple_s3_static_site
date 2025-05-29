@@ -93,7 +93,7 @@ resource "aws_launch_template" "master_lt" {
 }
 
 module "asg_master" {
-  source = "terraform-aws-modules/autoscaling/aws"
+  source  = "terraform-aws-modules/autoscaling/aws"
 
   name                      = "k8s-master-asg"
   min_size                  = 1
@@ -103,9 +103,8 @@ module "asg_master" {
   health_check_type         = "EC2"
   vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
 
-  launch_template_id = aws_launch_template.master_lt.id
-  launch_template_description = "Launch template for Kubernetes master node"
-  update_default_version      = true
+  launch_template_id      = aws_launch_template.master_lt.id
+  launch_template_version = "$Latest"
 
   ebs_optimized     = true
   enable_monitoring = true
