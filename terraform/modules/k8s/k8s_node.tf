@@ -92,10 +92,10 @@ module "asg_worker" {
       --output text \
       --region eu-north-1)
 
-    # Долучаємося до кластеру з sudo
-    echo "$JOIN_COMMAND" > /join.sh
-    chmod +x /join.sh
-    sudo /join.sh
+    until sudo bash -c "$JOIN_COMMAND"; do
+      echo "Join failed, retrying in 10s..."
+      sleep 10
+    done
     
     EOF
   )
