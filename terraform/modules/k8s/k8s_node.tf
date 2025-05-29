@@ -36,7 +36,7 @@ module "asg_worker" {
     }
   ]
 
-  user_data = base64encode(<<-EOF
+user_data = base64encode(<<-EOF
     #!/bin/bash
     set -euxo pipefail
 
@@ -44,34 +44,34 @@ module "asg_worker" {
     exec > >(tee -a "$LOG_FILE") 2>&1
 
     # prepare for kubernetes
-    echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
-    sudo sysctl -p
+    echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.conf
+    sysctl -p
 
-    sudo swapoff -a
-    sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+    swapoff -a
+    sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-    sudo ufw disable || true 
-    sudo systemctl stop firewalld || true
-    sudo systemctl disable firewalld || true
+    ufw disable || true
+    systemctl stop firewalld || true
+    systemctl disable firewalld || true
 
     # install containerd
-    sudo apt update -y
-    sudo apt install -y containerd
-    sudo mkdir -p /etc/containerd
-    sudo containerd config default | sudo tee /etc/containerd/config.toml
-    sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
-    sudo systemctl restart containerd
-    sudo systemctl enable containerd
+    apt update -y
+    apt install -y containerd
+    mkdir -p /etc/containerd
+    containerd config default | tee /etc/containerd/config.toml
+    sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+    systemctl restart containerd
+    systemctl enable containerd
 
     # install kubernetes
-    sudo apt-get update -y 
-    sudo apt-get install -y apt-transport-https ca-certificates curl gpg
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-    sudo apt-get update
-    sudo apt-get install -y kubelet kubeadm kubectl
-    sudo apt-mark hold kubelet kubeadm kubectl
-    sudo systemctl enable --now kubelet
+    apt-get update -y
+    apt-get install -y apt-transport-https ca-certificates curl gpg
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+    apt-get update
+    apt-get install -y kubelet kubeadm kubectl
+    apt-mark hold kubelet kubeadm kubectl
+    systemctl enable --now kubelet
 
     # Отримуємо join команду з Parameter Store
     JOIN_COMMAND=$(aws ssm get-parameter \
@@ -85,7 +85,7 @@ module "asg_worker" {
     $JOIN_COMMAND
     
     EOF
-  )
+)
 
   tags = {
     Name        = "k8s-worker"
