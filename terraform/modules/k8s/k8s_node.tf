@@ -85,18 +85,31 @@ module "asg_worker" {
     sleep 5
     done
 
-    JOIN_COMMAND=$(aws ssm get-parameter \
+    aws ssm get-parameter \
       --name "/k8s/join-command" \
       --with-decryption \
       --query "Parameter.Value" \
       --output text \
-      --region eu-north-1)
+      --region eu-north-1 \
+      > /tmp/k8s_join_command.sh
 
-    until sudo bash -c "$JOIN_COMMAND"; do
-      echo "Join failed, retrying in 10s..."
-      sleep 10
+    # Додаємо шебанг на початок
+    sed -i '1i#!/bin/bash' /tmp/k8s_join_command.sh
+    chmod +x /tmp/k8s_join_command.sh
+
+    # Лічильник спроб
+    ATTEMPTS=0
+    MAX_ATTEMPTS=3
+
+    until sudo bash /tmp/k8s_join_command.sh; do
+    ATTEMPTS=$((ATTEMPTS+1))
+    echo "Join failed, retrying in 10s... (attempt $ATTEMPTS/$MAX_ATTEMPTS)"
+    if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+    echo "Join failed after $MAX_ATTEMPTS attempts. Exiting."
+    exit 1
+    fi
+    sleep 10
     done
-    
     EOF
   )
 
