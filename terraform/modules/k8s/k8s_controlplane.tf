@@ -28,7 +28,69 @@ module "asg_master" {
       }
     }
   ]
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    set -euxo pipefail
 
+    LOG_FILE="/var/log/user_data.log"
+    exec > >(tee -a "$LOG_FILE") 2>&1
+
+    # Install updates and dependencies
+    apt update -y
+
+    # Enable IP forwarding
+    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+    sysctl -p
+
+    # Disable swap
+    swapoff -a
+    sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+    # Disable firewalls
+    ufw disable || true
+    systemctl stop firewalld || true
+    systemctl disable firewalld || true
+
+    # Install containerd
+    apt install -y containerd
+    mkdir -p /etc/containerd
+    containerd config default > /etc/containerd/config.toml
+    sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+    systemctl restart containerd
+    systemctl enable containerd
+
+    # Add Kubernetes repo
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
+
+    apt update
+    apt install -y kubelet kubeadm kubectl
+    apt-mark hold kubelet kubeadm kubectl
+    systemctl enable --now kubelet
+
+    # Initialize master node
+    kubeadm init --pod-network-cidr=10.244.0.0/16
+
+    # Setup kubectl for root
+    mkdir -p /root/.kube
+    cp /etc/kubernetes/admin.conf /root/.kube/config
+    chown root:root /root/.kube/config
+
+    # Install Flannel network
+    kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+
+    # Store join command in Parameter Store
+    JOIN_CMD=$(kubeadm token create --print-join-command)
+    aws ssm put-parameter \
+      --name "/k8s/join-command" \
+      --type "String" \
+      --value "$JOIN_CMD" \
+      --overwrite \
+      --region eu-north-1
+    EOF
+    )
+    
   ebs_optimized     = true
   enable_monitoring = true
 

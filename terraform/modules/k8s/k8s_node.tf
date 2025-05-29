@@ -36,6 +36,57 @@ module "asg_worker" {
     }
   ]
 
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    set -euxo pipefail
+
+    LOG_FILE="/var/log/user_data.log"
+    exec > >(tee -a "$LOG_FILE") 2>&1
+
+    # prepare for kubernetes
+    echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
+    sudo sysctl -p
+
+    sudo swapoff -a
+    sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+    sudo ufw disable || true 
+    sudo systemctl stop firewalld || true
+    sudo systemctl disable firewalld || true
+
+    # install containerd
+    sudo apt update -y
+    sudo apt install -y containerd
+    sudo mkdir -p /etc/containerd
+    sudo containerd config default | sudo tee /etc/containerd/config.toml
+    sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+    sudo systemctl restart containerd
+    sudo systemctl enable containerd
+
+    # install kubernetes
+    sudo apt-get update -y 
+    sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get update
+    sudo apt-get install -y kubelet kubeadm kubectl
+    sudo apt-mark hold kubelet kubeadm kubectl
+    sudo systemctl enable --now kubelet
+
+    # Отримуємо join команду з Parameter Store
+    JOIN_COMMAND=$(aws ssm get-parameter \
+    --name "/k8s/join-command" \
+    --with-decryption \
+    --query "Parameter.Value" \
+    --output text \
+    --region eu-north-1)
+
+    # Долучаємося до кластеру
+    $JOIN_COMMAND
+    
+    EOF
+  )
+
   tags = {
     Name        = "k8s-worker"
     Environment = "dev"
