@@ -44,7 +44,7 @@ user_data = base64encode(<<-EOF
     exec > >(tee -a "$LOG_FILE") 2>&1
 
     # prepare for kubernetes
-    echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.conf
+    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
     sysctl -p
 
     swapoff -a
@@ -79,15 +79,20 @@ user_data = base64encode(<<-EOF
     apt-mark hold kubelet kubeadm kubectl
     systemctl enable --now kubelet
 
-    # Отримуємо join команду з Parameter Store
-    JOIN_COMMAND=$(aws ssm get-parameter \
-    --name "/k8s/join-command" \
-    --with-decryption \
-    --query "Parameter.Value" \
-    --output text \
-    --region eu-north-1)
+    
+    while ! aws ssm get-parameter --name "/k8s/join-command" --region eu-north-1 >/dev/null 2>&1; do
+    echo "Waiting for /k8s/join-command to become available..."
+    sleep 5
+    done
 
-    # Долучаємося до кластеру
+    JOIN_COMMAND=$(aws ssm get-parameter \
+      --name "/k8s/join-command" \
+      --with-decryption \
+      --query "Parameter.Value" \
+      --output text \
+      --region eu-north-1)
+
+      # Долучаємося до кластеру
     $JOIN_COMMAND
     
     EOF
