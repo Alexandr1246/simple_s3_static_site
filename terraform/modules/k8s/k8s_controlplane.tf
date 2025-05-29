@@ -104,7 +104,7 @@ module "asg_master" {
   vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
 
   launch_template_id      = aws_launch_template.master_lt.id
-  launch_template_version = "$Latest"
+  launch_template_version = aws_launch_template.master_lt.latest_version
 
   ebs_optimized     = true
   enable_monitoring = true
