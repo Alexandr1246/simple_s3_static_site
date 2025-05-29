@@ -78,7 +78,7 @@ module "asg_master" {
     chown root:root /root/.kube/config
 
     # Install Flannel network
-    kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+    sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 
     # Store join command in Parameter Store
     JOIN_CMD=$(kubeadm token create --print-join-command)
