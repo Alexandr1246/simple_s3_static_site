@@ -73,30 +73,55 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
       {
         "Effect" : "Allow",
         "Action" : [
+          "iam:CreatePolicy",
+          "iam:GetPolicy",
+          "iam:GetPolicyVersion",
+          "iam:DeletePolicy",
+          "iam:ListPolicies",
+          "iam:CreatePolicyVersion",
+          "iam:SetDefaultPolicyVersion",
+          "iam:DeletePolicyVersion",
           "iam:CreateRole",
           "iam:GetRole",
           "iam:DeleteRole",
+          "iam:ListRoles",
           "iam:PassRole",
+          "iam:TagRole",
+          "iam:UntagRole",
           "iam:AttachRolePolicy",
           "iam:DetachRolePolicy",
           "iam:PutRolePolicy",
           "iam:DeleteRolePolicy",
           "iam:ListRolePolicies",
           "iam:ListAttachedRolePolicies",
-          "iam:ListInstanceProfilesForRole",
+          "iam:GetRolePolicy",
+          "iam:GetInstanceProfile",
           "iam:CreateInstanceProfile",
+          "iam:DeleteInstanceProfile",
           "iam:AddRoleToInstanceProfile",
           "iam:RemoveRoleFromInstanceProfile",
-          "iam:DeleteInstanceProfile",
-          "iam:TagRole",
-          "iam:UntagRole",
+          "iam:ListInstanceProfiles",
+          "iam:ListInstanceProfilesForRole",
           "iam:CreateOpenIDConnectProvider",
           "iam:GetOpenIDConnectProvider",
           "iam:DeleteOpenIDConnectProvider",
-          "iam:GetInstanceProfile"
+          "iam:UpdateAssumeRolePolicy",
+          "iam:GetUser",
+          "iam:SimulatePrincipalPolicy"
+        ],
+        "Resource" : "*"
+      },
+
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:ListPolicyVersions",
+          "iam:ListEntitiesForPolicy",
+          "iam:UpdateRole"
         ],
         "Resource" : "*"
       }
+
     ]
   })
 }

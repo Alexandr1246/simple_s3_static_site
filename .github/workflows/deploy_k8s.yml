@@ -1,0 +1,89 @@
+name: Deploy K8S Infrastructure
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        id: configure
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
+          aws-region: eu-north-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.4
+
+      - name: Terraform Init
+        run: terraform init -upgrade
+        working-directory: terraform/environments/dev
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-init.log
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: terraform/environments/dev
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-valid.log 
+
+      - name: Terraform Refresh
+        run: terraform refresh 
+        working-directory: terraform/environments/dev
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-refresh.log
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: terraform/environments/dev
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-plan.log
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: terraform/environments/dev
+        env:
+          TF_LOG: DEBUG
+          TF_LOG_PATH: terraform-apply.log
+
+      - name: Show Terraform logs
+        if: always()
+        run: |
+          echo "::group::Terraform Init Log"
+          cat terraform/terraform-init.log || echo "No init log found"
+          echo "::endgroup::"
+  
+          echo "::group::Terraform Validate Log"
+          cat terraform/terraform-valid.log || echo "No validate log found"
+          echo "::endgroup::"
+         
+          echo "::group::Terraform Refresh Log" # Додано вивід логів для refresh
+          cat terraform/terraform-refresh.log || echo "No refresh log found"
+          echo "::endgroup::"
+
+          echo "::group::Terraform Plan Log"
+          cat terraform/terraform-plan.log || echo "No plan log found"
+          echo "::endgroup::"
+  
+          echo "::group::Terraform Apply Log"
+          cat terraform/terraform-apply.log || echo "No apply log found"
+          echo "::endgroup::"
