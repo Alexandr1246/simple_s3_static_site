@@ -95,7 +95,7 @@ module "asg_master" {
       --overwrite \
       --region eu-north-1
     EOF
-    )
+  )
 
   ebs_optimized     = true
   enable_monitoring = true

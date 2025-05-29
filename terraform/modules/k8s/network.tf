@@ -71,6 +71,23 @@ resource "aws_security_group" "k8s_sg" {
     description = "Allow all outbound traffic"
   }
 
+  ingress {
+    from_port   = 8285
+    to_port     = 8285
+    protocol    = "udp"
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Flannel VXLAN UDP port"
+  }
+
+  ingress {
+    from_port   = 8472
+    to_port     = 8472
+    protocol    = "udp"
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "Flannel VXLAN UDP port (alternative)"
+  }
+
+
   tags = {
     Name = "k8s-sg"
   }

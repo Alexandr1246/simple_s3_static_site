@@ -36,7 +36,7 @@ module "asg_worker" {
     }
   ]
 
-user_data = base64encode(<<-EOF
+  user_data = base64encode(<<-EOF
     #!/bin/bash
     set -euxo pipefail
 
@@ -96,7 +96,7 @@ user_data = base64encode(<<-EOF
     $JOIN_COMMAND
     
     EOF
-)
+  )
 
   tags = {
     Name        = "k8s-worker"
