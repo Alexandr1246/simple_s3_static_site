@@ -92,8 +92,10 @@ module "asg_worker" {
       --output text \
       --region eu-north-1)
 
-      # Долучаємося до кластеру
-    $JOIN_COMMAND
+    # Долучаємося до кластеру з sudo
+    echo "$JOIN_COMMAND" > /join.sh
+    chmod +x /join.sh
+    sudo /join.sh
     
     EOF
   )
