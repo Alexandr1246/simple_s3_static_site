@@ -38,6 +38,12 @@ module "asg_master" {
     # Install updates and dependencies
     apt update -y
 
+    #Install aws cli 
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+    sudo apt install -y unzip
+    sudo unzip /tmp/awscliv2.zip -d /tmp
+    sudo /tmp/aws/install
+
     # Enable IP forwarding
     echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
     sysctl -p
