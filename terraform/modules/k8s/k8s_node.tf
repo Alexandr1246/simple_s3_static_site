@@ -80,7 +80,7 @@ module "asg_worker" {
     systemctl enable --now kubelet
 
     
-    echo "Waiting for /k8s/join-command to become available in Parameter Store..."
+      echo "Waiting for /k8s/join-command to become available in Parameter Store..."
     while ! aws ssm get-parameter --name "/k8s/join-command" --region eu-north-1 >/dev/null 2>&1; do
         echo "Waiting for /k8s/join-command to become available..."
         sleep 5
@@ -91,32 +91,11 @@ module "asg_worker" {
       --with-decryption \
       --query "Parameter.Value" \
       --output text \
-      --region eu-north-1 \
-      > /tmp/k8s_join_command.sh
+      --region eu-north-1 && sed -i '1i#!/bin/bash' /tmp/k8s_join_command.sh 
 
-    echo "Join command fetched successfully."
+    chmod +x /tmp/k8s_join_command.sh
 
-    MASTER_IP=$(echo "$JOIN_COMMAND" | awk '{print $3}' | cut -d ':' -f 1)
-    echo "Waiting for Master API Server ($MASTER_IP:6443) to be reachable..."
-    until curl -k -s https://"$MASTER_IP":6443/version &>/dev/null; do
-        echo "Master API Server not reachable yet. Waiting 5 seconds..."
-        sleep 5
-    done
-    echo "Master API Server is reachable. Proceeding with join."
-   
-    ATTEMPTS=0
-    MAX_ATTEMPTS=5
-
-    until sudo bash -c "$JOIN_COMMAND"; do
-        ATTEMPTS=$((ATTEMPTS+1))
-        echo "Join failed, retrying in 10s... (attempt $ATTEMPTS/$MAX_ATTEMPTS)"
-        if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
-            echo "Join failed after $MAX_ATTEMPTS attempts. Exiting."
-            exit 1
-        fi
-        sleep 10
-    done
-    echo "Node successfully joined the cluster."
+    sudo bash /tmp/k8s_join_command.sh
     
     EOF
   )
