@@ -96,7 +96,23 @@ module "asg_worker" {
 
     chmod +x /tmp/k8s_join_command.sh
 
-    sudo bash /tmp/k8s_join_command.sh
+    MAX_RETRIES=20
+    RETRY_INTERVAL=15
+    ATTEMPT=0
+
+    echo "Attempting to join the Kubernetes cluster..."
+
+    until sudo bash /tmp/k8s_join_command.sh;
+    ATTEMPT=$((ATTEMPT + 1))
+    echo "[$ATTEMPT/$MAX_RETRIES] kubeadm join failed. Retrying in $RETRY_INTERVAL seconds..."
+    if [ "$ATTEMPT" -ge "$MAX_RETRIES" ]; then
+    echo "kubeadm join did not succeed after $MAX_RETRIES attempts. Exiting."
+    exit 1
+    fi
+    sleep "$RETRY_INTERVAL"
+    done
+
+    echo "Successfully joined the Kubernetes cluster!"
     
     EOF
   )
