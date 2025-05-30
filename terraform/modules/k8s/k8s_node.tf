@@ -87,11 +87,12 @@ module "asg_worker" {
     done
 
     aws ssm get-parameter \
-      --name "/k8s/join-command" \
-      --with-decryption \
-      --query "Parameter.Value" \
-      --output text \
-      --region eu-north-1 && sed -i '1i#!/bin/bash' /tmp/k8s_join_command.sh 
+    --name "/k8s/join-command" \
+    --with-decryption \
+    --query "Parameter.Value" \
+    --output text \
+    --region eu-north-1 > /tmp/k8s_join_command.sh && \
+    sed -i '1i#!/bin/bash' /tmp/k8s_join_command.sh
 
     chmod +x /tmp/k8s_join_command.sh
 
