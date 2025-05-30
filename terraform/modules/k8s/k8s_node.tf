@@ -103,7 +103,7 @@ module "asg_worker" {
     chmod +x /tmp/k8s_join_command.sh
 
     echo "Attempting to join the Kubernetes cluster..."
-    if sudo bash /tmp/k8s_join_command.sh; then
+    if timeout 30s sudo bash /tmp/k8s_join_command.sh; then
     echo "Successfully joined the cluster."
     break
     fi
