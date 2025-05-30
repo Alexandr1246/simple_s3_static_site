@@ -83,36 +83,40 @@ module "asg_worker" {
       echo "Waiting for /k8s/join-command to become available in Parameter Store..."
     while ! aws ssm get-parameter --name "/k8s/join-command" --region eu-north-1 >/dev/null 2>&1; do
         echo "Waiting for /k8s/join-command to become available..."
-        sleep 5
+        sleep 10
     done
-
-    aws ssm get-parameter \
-    --name "/k8s/join-command" \
-    --with-decryption \
-    --query "Parameter.Value" \
-    --output text \
-    --region eu-north-1 > /tmp/k8s_join_command.sh && \
-    sed -i '1i#!/bin/bash' /tmp/k8s_join_command.sh
-
-    chmod +x /tmp/k8s_join_command.sh
 
     MAX_RETRIES=20
     RETRY_INTERVAL=15
     ATTEMPT=0
 
-    echo "Attempting to join the Kubernetes cluster..."
+    while true; do
+    echo "Fetching join command from SSM..."
+    timeout 10s aws ssm get-parameter \
+    --name "/k8s/join-command" \
+    --with-decryption \
+    --query "Parameter.Value" \
+    --output text \
+    --region eu-north-1 > /tmp/k8s_join_command.sh
 
-    until sudo bash /tmp/k8s_join_command.sh;
+    sed -i '1i#!/bin/bash' /tmp/k8s_join_command.sh
+    chmod +x /tmp/k8s_join_command.sh
+
+    echo "Attempting to join the Kubernetes cluster..."
+    if sudo bash /tmp/k8s_join_command.sh; then
+    echo "Successfully joined the cluster."
+    break
+    fi
+
     ATTEMPT=$((ATTEMPT + 1))
-    echo "[$ATTEMPT/$MAX_RETRIES] kubeadm join failed. Retrying in $RETRY_INTERVAL seconds..."
     if [ "$ATTEMPT" -ge "$MAX_RETRIES" ]; then
-    echo "kubeadm join did not succeed after $MAX_RETRIES attempts. Exiting."
+    echo "Failed to join after $MAX_RETRIES attempts."
     exit 1
     fi
-    sleep "$RETRY_INTERVAL"
-    done
 
-    echo "Successfully joined the Kubernetes cluster!"
+    echo "Join attempt failed. Retrying in $RETRY_INTERVAL seconds..."
+    sleep $RETRY_INTERVAL
+    done
     
     EOF
   )

@@ -86,35 +86,31 @@ module "asg_master" {
     # Install Flannel network
     sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 
-    # Wait for API server and node to become Ready
-    MAX_RETRIES=30
+    MAX_RETRIES=20
     RETRY_INTERVAL=10
     ATTEMPT=0
 
-    echo "Waiting for API server to be accessible and node to be Ready..."
+    echo "Waiting for master node to become Ready..."
 
-    until kubectl get nodes | grep "$(hostname)" | grep -q ' Ready '; do
-    ATTEMPT=$((ATTEMPT + 1))
+    until sudo kubectl get nodes --no-headers | awk '$2 == "Ready" && $3 == "control-plane" { found=1 } END { exit !found }'; do
+    ATTEMPT=$((ATTEMPT+1))
     echo "[$ATTEMPT/$MAX_RETRIES] Master node not Ready yet..."
     if [ "$ATTEMPT" -ge "$MAX_RETRIES" ]; then
     echo "Master node did not become Ready in time. Exiting."
     exit 1
     fi
-    sleep "$RETRY_INTERVAL"
+    sleep $RETRY_INTERVAL
     done
 
-    echo "Master node is Ready. Proceeding to generate join command."
-
+    echo "Master node is Ready. Creating join command..."
     JOIN_CMD=$(kubeadm token create --print-join-command)
 
     aws ssm put-parameter \
-      --name "/k8s/join-command" \
-      --type "String" \
-      --value "$JOIN_CMD" \
-      --overwrite \
-      --region eu-north-1
-
-    echo "Join command successfully saved to Parameter Store."
+    --name "/k8s/join-command" \
+    --type "String" \
+    --value "$JOIN_CMD" \
+    --overwrite \
+    --region eu-north-1
     EOF
   )
 
