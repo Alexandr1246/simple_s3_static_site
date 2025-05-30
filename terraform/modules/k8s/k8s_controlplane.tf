@@ -70,7 +70,7 @@ module "asg_master" {
     curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
 
-    apt update
+    apt update -y
     apt install -y kubelet kubeadm kubectl
     apt-mark hold kubelet kubeadm kubectl
     systemctl enable --now kubelet
@@ -95,10 +95,10 @@ module "asg_master" {
     until sudo kubectl get nodes --no-headers | awk '$2 == "Ready" && $3 == "control-plane" { found=1 } END { exit !found }'; do
     ATTEMPT=$((ATTEMPT+1))
     echo "[$ATTEMPT/$MAX_RETRIES] Master node not Ready yet..."
-    if [ "$ATTEMPT" -ge "$MAX_RETRIES" ]; then
-    echo "Master node did not become Ready in time. Exiting."
-    exit 1
-    fi
+      if [ "$ATTEMPT" -ge "$MAX_RETRIES" ]; then
+        echo "Master node did not become Ready in time. Exiting."
+      exit 1
+      fi
     sleep $RETRY_INTERVAL
     done
 
@@ -106,11 +106,12 @@ module "asg_master" {
     JOIN_CMD=$(kubeadm token create --print-join-command)
 
     aws ssm put-parameter \
-    --name "/k8s/join-command" \
-    --type "String" \
-    --value "$JOIN_CMD" \
-    --overwrite \
-    --region eu-north-1
+      --name "/k8s/join-command" \
+      --type "String" \
+      --value "$JOIN_CMD" \
+      --overwrite \
+      --region eu-north-1
+
     EOF
   )
 
