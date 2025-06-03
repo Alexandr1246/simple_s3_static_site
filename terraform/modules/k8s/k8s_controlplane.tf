@@ -45,8 +45,14 @@ module "asg_master" {
     sudo /tmp/aws/install
 
     # Enable IP forwarding
-    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
-    sysctl -p
+    # echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+    # Enable bridge networking
+    modprobe br_netfilter
+    echo 'br_netfilter' > /etc/modules-load.d/br_netfilter.conf
+    echo 'net.bridge.bridge-nf-call-iptables = 1' > /etc/sysctl.d/99-kubernetes-cri.conf
+    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.d/99-kubernetes-cri.conf
+    echo 'net.bridge.bridge-nf-call-ip6tables = 1' >> /etc/sysctl.d/99-kubernetes-cri.conf
+    sysctl --system
 
     # Disable swap
     swapoff -a
