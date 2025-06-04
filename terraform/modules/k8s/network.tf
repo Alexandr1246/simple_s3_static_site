@@ -87,16 +87,16 @@ resource "aws_security_group" "k8s_sg" {
     description = "Flannel VXLAN UDP port (alternative)"
   }
   ingress {
-    from_port   = 30080
-    to_port     = 30080
+    from_port   = 30000
+    to_port     = 32767
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
     description = "NodePort traffic"
   }
 
   ingress {
-    from_port   = 30080
-    to_port     = 30080
+    from_port   = 30000
+    to_port     = 32767
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "NodePort traffic from internet"
