@@ -118,8 +118,8 @@ module "asg_master" {
       --overwrite \
       --region eu-north-1
     
-    sudo kubectl run testpod --image=nginx --port=80 --restart=Never --dry-run=client -o yaml > ~/testpod.yaml
-    sudo mv ~/testpod.yaml /etc/kubernetes/manifests/testpod.yaml
+    #sudo kubectl run testpod --image=nginx --port=80 --restart=Never --dry-run=client -o yaml > ~/testpod.yaml
+    #sudo mv ~/testpod.yaml /etc/kubernetes/manifests/testpod.yaml
     EOF
   )
 
