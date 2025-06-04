@@ -86,6 +86,21 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
     description = "Flannel VXLAN UDP port (alternative)"
   }
+  ingress {
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.k8s_vpc.cidr_block]
+    description = "NodePort traffic"
+  }
+
+  ingress {
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "NodePort traffic from internet"
+  }
 
 
   tags = {
