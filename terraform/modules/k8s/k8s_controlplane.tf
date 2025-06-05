@@ -85,9 +85,13 @@ module "asg_master" {
     kubeadm init --pod-network-cidr=10.244.0.0/16
 
     # Setup kubectl for root
-    mkdir -p /root/.kube
-    cp -i /etc/kubernetes/admin.conf /root/.kube/config
-    chown root:root /root/.kube/config
+    #mkdir -p /root/.kube
+    #cp -i /etc/kubernetes/admin.conf /root/.kube/config
+    #chown root:root /root/.kube/config
+
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
     # Install Flannel network
     sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
