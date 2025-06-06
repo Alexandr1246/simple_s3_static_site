@@ -88,6 +88,8 @@ module "asg_master" {
     #cp -i /etc/kubernetes/admin.conf /root/.kube/config
     #chown root:root /root/.kube/config
 
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+
     KUBECONFIG_B64=$(base64 /etc/kubernetes/admin.conf | tr -d '\n')
 
     # Install Flannel network
