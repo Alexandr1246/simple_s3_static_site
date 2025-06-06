@@ -120,6 +120,27 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
           "iam:UpdateRole"
         ],
         "Resource" : "*"
+      },
+
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:PutParameter",
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:DeleteParameter"
+        ],
+        "Resource" : "arn:aws:ssm:eu-north-1:050451395507:parameter/k8s/*"
+      },
+
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey"
+        ],
+        "Resource" : "*"
       }
 
     ]
