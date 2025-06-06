@@ -84,14 +84,11 @@ module "asg_master" {
     # Initialize master node
     kubeadm init --pod-network-cidr=10.244.0.0/16
 
-    # Setup kubectl for root
     #mkdir -p /root/.kube
     #cp -i /etc/kubernetes/admin.conf /root/.kube/config
     #chown root:root /root/.kube/config
 
-    mkdir -p $HOME/.kube
-    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    KUBECONFIG_B64=$(base64 /etc/kubernetes/admin.conf | tr -d '\n')
 
     # Install Flannel network
     sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
@@ -114,7 +111,7 @@ module "asg_master" {
 
     echo "Master node is Ready. Creating join command..."
     JOIN_CMD=$(kubeadm token create --print-join-command)
-
+    
     aws ssm put-parameter \
       --name "/k8s/join-command" \
       --type "String" \
@@ -122,6 +119,13 @@ module "asg_master" {
       --overwrite \
       --region eu-north-1
     
+    aws ssm put-parameter \
+      --name "/k8s/kubeconfig" \
+      --type "SecureString" \
+      --value "$KUBECONFIG_B64" \
+      --overwrite \
+      --region eu-north-1
+
     #sudo kubectl run testpod --image=nginx --port=80 --restart=Never --dry-run=client -o yaml > ~/testpod.yaml
     #sudo mv ~/testpod.yaml /etc/kubernetes/manifests/testpod.yaml
     EOF
