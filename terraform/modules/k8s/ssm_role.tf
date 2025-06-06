@@ -26,10 +26,13 @@ resource "aws_iam_policy" "ssm_custom_policy" {
         Effect = "Allow",
         Action = [
           "ssm:PutParameter",
-          "ssm:GetParameter"
+          "ssm:GetParameter",
+          "ssm:GetParameters"
         ],
-        Resource = "arn:aws:ssm:eu-north-1:${var.aws_account_id}:parameter/k8s/join-command"
+        Resource = "arn:aws:ssm:eu-north-1:${var.aws_account_id}:parameter/k8s/*"
       }
+
+
     ]
   })
 }
