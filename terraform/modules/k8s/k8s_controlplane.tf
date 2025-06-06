@@ -93,7 +93,7 @@ module "asg_master" {
     KUBECONFIG_B64=$(base64 /etc/kubernetes/admin.conf | tr -d '\n')
 
     # Install Flannel network
-    sudo kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+    sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 
     MAX_RETRIES=20
     RETRY_INTERVAL=10
