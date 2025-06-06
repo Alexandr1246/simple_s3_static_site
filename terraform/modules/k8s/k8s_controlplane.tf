@@ -101,7 +101,7 @@ module "asg_master" {
 
     echo "Waiting for master node to become Ready..."
 
-    until sudo kubectl get nodes --no-headers | awk '$2 == "Ready" && $3 == "control-plane" { found=1 } END { exit !found }'; do
+    until sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes --no-headers | awk '$2 == "Ready" && $3 == "control-plane" { found=1 } END { exit !found }'; do
     ATTEMPT=$((ATTEMPT+1))
     echo "[$ATTEMPT/$MAX_RETRIES] Master node not Ready yet..."
       if [ "$ATTEMPT" -ge "$MAX_RETRIES" ]; then
