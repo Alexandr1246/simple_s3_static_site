@@ -124,7 +124,8 @@ module "asg_master" {
     aws ssm put-parameter \
       --name "/k8s/kubeconfig" \
       --type "SecureString" \
-      --value "$KUBECONFIG_B64" \
+      --value "$(base64 /etc/kubernetes/admin.conf)" \
+      --tier "Advanced" \
       --overwrite \
       --region eu-north-1
 
