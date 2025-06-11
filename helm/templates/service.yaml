@@ -9,4 +9,4 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 80
-      protocol: TCP
+      nodePort: {{ .Values.service.nodePort }}
