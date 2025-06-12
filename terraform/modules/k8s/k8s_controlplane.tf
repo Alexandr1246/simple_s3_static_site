@@ -129,13 +129,11 @@ module "asg_master" {
     aws ssm put-parameter \
       --name "/k8s/kubeconfig" \
       --type "SecureString" \
-      --value "$(base64 /etc/kubernetes/admin.conf)" \
+      --value file:///etc/kubernetes/admin.conf \
       --tier "Advanced" \
       --overwrite \
       --region eu-north-1
 
-    #sudo kubectl run testpod --image=nginx --port=80 --restart=Never --dry-run=client -o yaml > ~/testpod.yaml
-    #sudo mv ~/testpod.yaml /etc/kubernetes/manifests/testpod.yaml
     EOF
   )
 
