@@ -34,8 +34,15 @@ jobs:
       - name: Get kubeconfig from SSM
         run: |
           mkdir -p ~/.kube
-          
-
+          aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
+      
+      - name: Debug kubeconfig
+        run: |
+          echo "==== ~/.kube/config ===="
+          cat ~/.kube/config
+          echo "========================"
+          kubectl config view    
+      
       - name: Install Helm
         uses: azure/setup-helm@v3
 
