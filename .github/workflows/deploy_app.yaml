@@ -41,4 +41,4 @@ jobs:
 
       - name: Deploy Helm chart
         run: |
-          helm upgrade --install my-app ./charts/my-app --namespace default --create-namespace
+          helm upgrade --install my-app ./helm --namespace default --create-namespace
