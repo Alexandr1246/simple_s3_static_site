@@ -87,7 +87,8 @@ module "asg_master" {
     # Initialize master node with public IP in SAN
     kubeadm init \
       --pod-network-cidr=10.244.0.0/16 \
-      --apiserver-cert-extra-sans="$PUBLIC_IP"
+      --apiserver-cert-extra-sans="$PUBLIC_IP" \
+      --control-plane-endpoint="$PUBLIC_IP"
 
     #mkdir -p /root/.kube
     #cp -i /etc/kubernetes/admin.conf /root/.kube/config
