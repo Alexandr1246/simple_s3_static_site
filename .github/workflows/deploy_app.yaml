@@ -48,4 +48,5 @@ jobs:
 
       - name: Deploy Helm chart
         run: |
-          helm upgrade --install my-app ./helm --namespace default --create-namespace --debug
+          ls -la
+          helm upgrade --install nginx-test helm --namespace default --create-namespace --debug
