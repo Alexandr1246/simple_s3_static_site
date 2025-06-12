@@ -96,7 +96,7 @@ module "asg_master" {
 
     export KUBECONFIG=/etc/kubernetes/admin.conf
 
-    KUBECONFIG_B64=$(base64 /etc/kubernetes/admin.conf | tr -d '\n')
+    #KUBECONFIG_B64=$(base64 /etc/kubernetes/admin.conf | tr -d '\n')
 
     # Install Flannel network
     sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
