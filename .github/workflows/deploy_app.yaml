@@ -34,11 +34,11 @@ jobs:
       - name: Get kubeconfig from SSM
         run: |
           mkdir -p ~/.kube
-          aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
+          
 
       - name: Install Helm
         uses: azure/setup-helm@v3
 
       - name: Deploy Helm chart
         run: |
-          helm upgrade --install my-app ./helm --namespace default --create-namespace
+          helm upgrade --install my-app ./helm --namespace default --create-namespace --debug
