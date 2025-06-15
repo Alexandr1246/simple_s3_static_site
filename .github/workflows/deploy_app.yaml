@@ -46,7 +46,12 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Deploy Helm chart
+      - name: Deploy NGINX chart
         run: |
           ls -la
-          helm upgrade --install nginx-test helm --namespace default --create-namespace --debug
+          helm upgrade --install nginx-test helm/flask-chart --namespace default --create-namespace --debug
+
+      - name: Deploy FLASK chart
+        run: |
+          ls -la
+          helm upgrade --install nginx-test helm/nginx-chart --namespace default --create-namespace --debug
