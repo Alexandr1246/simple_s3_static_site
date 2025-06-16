@@ -102,6 +102,13 @@ resource "aws_security_group" "k8s_sg" {
     description = "NodePort traffic from internet"
   }
 
+  ingress {
+  description = "Inter-node and kubelet access"
+  from_port   = 0
+  to_port     = 65535
+  protocol    = "tcp"
+  cidr_blocks = ["10.0.1.0/24"]
+  }
 
   tags = {
     Name = "k8s-sg"
