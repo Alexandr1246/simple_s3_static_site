@@ -52,21 +52,21 @@ jobs:
             echo "Repository already exists."
           fi
 
-      - name: Check if there are changes in app/ directory
-        id: check_changes
-        run: |
-          git config --global --add safe.directory $GITHUB_WORKSPACE
-          CHANGED=$(git diff --name-only HEAD^ HEAD | grep '^app/' || true)
-          if [ -z "$CHANGED" ]; then
-            echo "No changes in app/ directory. Skipping build."
-            echo "should_skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "Changes detected in app/. Proceeding with build."
-            echo "should_skip=false" >> $GITHUB_OUTPUT
-          fi
+#      - name: Check if there are changes in app/ directory
+#        id: check_changes
+#        run: |
+#          git config --global --add safe.directory $GITHUB_WORKSPACE
+#          CHANGED=$(git diff --name-only HEAD^ HEAD | grep '^app/' || true)
+#          if [ -z "$CHANGED" ]; then
+#            echo "No changes in app/ directory. Skipping build."
+#            echo "should_skip=true" >> $GITHUB_OUTPUT
+#          else
+#            echo "Changes detected in app/. Proceeding with build."
+#            echo "should_skip=false" >> $GITHUB_OUTPUT
+#          fi
 
       - name: Build and Push Docker image
-        if: steps.check_changes.outputs.should_skip == 'false'
+#        if: steps.check_changes.outputs.should_skip == 'false'
         uses: docker/build-push-action@v5
         with:
           context: ./app
