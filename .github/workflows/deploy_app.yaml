@@ -12,34 +12,30 @@ permissions:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials (OIDC)
-        id: configure
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
           aws-region: eu-north-1
 
-#      - name: Get kubeconfig from SSM
-#        run: |
-#          mkdir -p ~/.kube
-#          aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
-      
-#      - name: Debug kubeconfig
-#        run: |
-#          echo "==== ~/.kube/config ===="
-#          cat ~/.kube/config
-#          echo "========================"
-#          kubectl config view    
+      - name: Wait for Kubernetes cluster to be ready
+        run: |
+          mkdir -p ~/.kube
+          for i in $(seq 1 20); do
+            echo "Attempt $i: Fetching kubeconfig..."
+            aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
+            
+            echo "Checking cluster accessibility..."
+            kubectl get nodes && break
 
-      - name: Install Helm
-        uses: azure/setup-helm@v3
+            echo "Cluster not ready yet, sleeping 15 seconds..."
+            sleep 30
+          done
 
       - name: Create DockerHub imagePullSecret in Kubernetes
         run: |
@@ -50,29 +46,13 @@ jobs:
             --namespace=default \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Retry get kubeconfig and deploy Helm
-        uses: nick-fields/retry@v3
-        with:
-          max_attempts: 3
-          timeout_minutes: 10
-          command: |
-            mkdir -p ~/.kube
-            aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
-            helm upgrade --install nginx-test helm/nginx-chart --namespace default --create-namespace --debug
-            helm upgrade --install flask-app helm/flask-chart --namespace default --set image.pullSecrets[0]=regcred --create-namespace --debug
-#      - name: Deploy NGINX chart
-#        run: |
-#          ls -la
-#          helm upgrade --install nginx-test helm/nginx-chart \
-#            --namespace default \
-#            --create-namespace \
-#            --debug
+      - name: Install Helm
+        uses: azure/setup-helm@v3
 
-#      - name: Deploy FLASK chart
-#        run: |
-#          ls -la
-#          helm upgrade --install flask-app helm/flask-chart \
-#            --namespace default \
-#            --set image.pullSecrets[0]=regcred \
-#            --create-namespace \
-#            --debug
+      - name: Deploy NGINX chart
+        run: |
+          helm upgrade --install nginx-test helm/nginx-chart --namespace default --create-namespace --debug
+
+      - name: Deploy FLASK chart
+        run: |
+          helm upgrade --install flask-app helm/flask-chart --namespace default --set image.pullSecrets[0]=regcred --create-namespace --debug
