@@ -29,8 +29,44 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      
+      - name: Ensure Docker Hub repository exists (private)
+        run: |
+          REPO_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" \
+            https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_HUB_USERNAME }}/simple-flask)
+
+          if [ "$REPO_EXISTS" -ne 200 ]; then
+            echo "Repository does not exist. Creating..."
+            curl -s -X POST https://hub.docker.com/v2/repositories/ \
+              -H "Authorization: Bearer ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "namespace": "${{ secrets.DOCKER_HUB_USERNAME }}",
+                "name": "simple-flask",
+                "description": "Simple Flask App",
+                "is_private": true
+              }'
+            echo "Repository created!"
+          else
+            echo "Repository already exists."
+          fi
+
+      - name: Check if there are changes in app/ directory
+        id: check_changes
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          CHANGED=$(git diff --name-only HEAD^ HEAD | grep '^app/' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "No changes in app/ directory. Skipping build."
+            echo "should_skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected in app/. Proceeding with build."
+            echo "should_skip=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build and Push Docker image
+        if: steps.check_changes.outputs.should_skip == 'false'
         uses: docker/build-push-action@v5
         with:
           context: ./app
