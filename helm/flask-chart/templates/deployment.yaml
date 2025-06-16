@@ -13,7 +13,7 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       imagePullSecrets:
-        {{ .Values.image.pullSecrets }}
+        {{-toYaml .Values.image.pullSecrets | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
