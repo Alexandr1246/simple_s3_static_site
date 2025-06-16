@@ -26,17 +26,17 @@ jobs:
           role-to-assume: arn:aws:iam::050451395507:role/github-oidc-role
           aws-region: eu-north-1
 
-      - name: Get kubeconfig from SSM
-        run: |
-          mkdir -p ~/.kube
-          aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
+#      - name: Get kubeconfig from SSM
+#        run: |
+#          mkdir -p ~/.kube
+#          aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
       
-      - name: Debug kubeconfig
-        run: |
-          echo "==== ~/.kube/config ===="
-          cat ~/.kube/config
-          echo "========================"
-          kubectl config view    
+#      - name: Debug kubeconfig
+#        run: |
+#          echo "==== ~/.kube/config ===="
+#          cat ~/.kube/config
+#          echo "========================"
+#          kubectl config view    
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -50,19 +50,29 @@ jobs:
             --namespace=default \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Deploy NGINX chart
-        run: |
-          ls -la
-          helm upgrade --install nginx-test helm/nginx-chart \
-            --namespace default \
-            --create-namespace \
-            --debug
+      - name: Retry get kubeconfig and deploy Helm
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 3
+          timeout_minutes: 10
+          command: |
+            mkdir -p ~/.kube
+            aws ssm get-parameter --name "/k8s/kubeconfig" --with-decryption --query "Parameter.Value" --output text > ~/.kube/config
+            helm upgrade --install nginx-test helm/nginx-chart --namespace default --create-namespace --debug
+            helm upgrade --install flask-app helm/flask-chart --namespace default --set image.pullSecrets[0]=regcred --create-namespace --debug
+#      - name: Deploy NGINX chart
+#        run: |
+#          ls -la
+#          helm upgrade --install nginx-test helm/nginx-chart \
+#            --namespace default \
+#            --create-namespace \
+#            --debug
 
-      - name: Deploy FLASK chart
-        run: |
-          ls -la
-          helm upgrade --install flask-app helm/flask-chart \
-            --namespace default \
-            --set image.pullSecrets[0]=regcred \
-            --create-namespace \
-            --debug
+#      - name: Deploy FLASK chart
+#        run: |
+#          ls -la
+#          helm upgrade --install flask-app helm/flask-chart \
+#            --namespace default \
+#            --set image.pullSecrets[0]=regcred \
+#            --create-namespace \
+#            --debug
