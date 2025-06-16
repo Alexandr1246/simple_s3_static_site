@@ -4,7 +4,7 @@ image:
   repository: olexandrod/simple-flask  
   tag: "latest"
   pullSecrets:
-    - regcred
+    - name: regcred
 
 service:
   type: NodePort

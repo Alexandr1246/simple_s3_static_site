@@ -55,4 +55,9 @@ jobs:
 
       - name: Deploy FLASK chart
         run: |
-          helm upgrade --install flask-app helm/flask-chart --namespace default --set image.pullSecrets[0]=regcred --create-namespace --debug
+          helm upgrade --install flask-app helm/flask-chart \
+            --namespace default \
+            --set image.pullSecrets[0].name=regcred \
+            --create-namespace \
+            --debug
+
