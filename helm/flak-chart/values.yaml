@@ -3,7 +3,8 @@ replicaCount: 1
 image:
   repository: olexandrod/simple-flask  
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullSecrets:
+    - regcred
 
 service:
   type: NodePort

@@ -12,10 +12,10 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      imagePullSecrets:
+        {{ .Values.image.pullSecrets }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 5000
-          resources:

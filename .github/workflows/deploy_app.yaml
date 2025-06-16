@@ -1,11 +1,5 @@
 name: Deploy App to Kubernetes
 
-#on:
-#  pull_request:
-#    branches:
-#      - main
-#  workflow_dispatch:
-
 on:
   workflow_run:
     workflows: ["Deploy K8S Infrastructure"]
@@ -20,6 +14,7 @@ jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,16 +37,32 @@ jobs:
           cat ~/.kube/config
           echo "========================"
           kubectl config view    
-      
+
       - name: Install Helm
         uses: azure/setup-helm@v3
+
+      - name: Create DockerHub imagePullSecret in Kubernetes
+        run: |
+          kubectl create secret docker-registry regcred \
+            --docker-username="${{ secrets.DOCKER_HUB_USERNAME }}" \
+            --docker-password="${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" \
+            --docker-email="ci@example.com" \
+            --namespace=default \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy NGINX chart
         run: |
           ls -la
-          helm upgrade --install nginx-test helm/flask-chart --namespace default --create-namespace --debug
+          helm upgrade --install nginx-test helm/nginx-chart \
+            --namespace default \
+            --create-namespace \
+            --debug
 
       - name: Deploy FLASK chart
         run: |
           ls -la
-          helm upgrade --install nginx-test helm/nginx-chart --namespace default --create-namespace --debug
+          helm upgrade --install flask-app helm/flask-chart \
+            --namespace default \
+            --set image.pullSecrets[0]=regcred \
+            --create-namespace \
+            --debug
