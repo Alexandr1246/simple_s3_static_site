@@ -69,6 +69,7 @@ jobs:
 #        if: steps.check_changes.outputs.should_skip == 'false'
         uses: docker/build-push-action@v5
         with:
-          context: ./app
+          context: .
           push: true
+          file: simple_flask/Dockerfile
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/simple-flask:latest
