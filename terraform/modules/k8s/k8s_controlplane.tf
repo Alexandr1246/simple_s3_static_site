@@ -1,4 +1,5 @@
 module "asg_master" {
+  version = "8.1.0"
   source = "terraform-aws-modules/autoscaling/aws"
 
   name                      = "k8s-master-asg"
@@ -9,6 +10,7 @@ module "asg_master" {
   health_check_type         = "EC2"
   vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
   security_groups           = [aws_security_group.k8s_sg.id]
+  
 
   image_id      = "ami-04542995864e26699"
   instance_type = "t3.medium"

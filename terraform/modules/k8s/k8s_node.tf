@@ -1,5 +1,6 @@
 
 module "asg_worker" {
+  version = "8.1.0"
   source = "terraform-aws-modules/autoscaling/aws"
 
   name                      = "k8s-worker-asg"
