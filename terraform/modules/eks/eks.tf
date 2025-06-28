@@ -1,26 +1,36 @@
-module "eks" {
+module "eks_self_managed_cluster" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.31"
+  version = "~> 20.0"
 
-  cluster_name    = "example"
+  cluster_name    = "eks_self_managed_cluster"
   cluster_version = "1.31"
 
-  # Optional
-  cluster_endpoint_public_access = true
-
-  # Optional: Adds the current caller identity as an administrator via cluster access entry
-  enable_cluster_creator_admin_permissions = true
-
-  cluster_compute_config = {
-    enabled    = true
-    node_pools = ["general-purpose"]
+  # EKS Addons
+  cluster_addons = {
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
   }
 
-  vpc_id     = "vpc-1234556abcdef"
-  subnet_ids = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghi345a"]
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  self_managed_node_groups = {
+    example = {
+      ami_type      = "AL2_x86_64"
+      instance_type = "t3.medium"
+
+      min_size = 2
+      max_size = 5
+      # This value is ignored after the initial creation
+      # https://github.com/bryantbiggs/eks-desired-size-hack
+      desired_size = 2
+    }
+  }
 
   tags = {
-    Environment = "dev"
-    Terraform   = "true"
+    name = "eks_k8s_cluster"
+    environment = "dev" 
   }
 }
