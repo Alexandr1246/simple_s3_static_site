@@ -21,8 +21,8 @@ module "eks_self_managed_cluster" {
       ami_type      = "AL2_x86_64"
       instance_type = "t3.medium"
 
-      min_size = 2
-      max_size = 5
+      min_size = 1
+      max_size = 1
       # This value is ignored after the initial creation
       # https://github.com/bryantbiggs/eks-desired-size-hack
       desired_size = 2
