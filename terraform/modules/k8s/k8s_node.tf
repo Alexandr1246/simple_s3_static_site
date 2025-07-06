@@ -9,7 +9,7 @@ module "asg_worker" {
   desired_capacity          = 1
   wait_for_capacity_timeout = 0
   health_check_type         = "EC2"
-  vpc_zone_identifier       = [aws_subnet.k8s_subnet.id]
+  vpc_zone_identifier       = module.vpc.private_subnet_ids
   security_groups           = [aws_security_group.k8s_sg.id]
 
   launch_template_name        = "k8s-worker-lt"
