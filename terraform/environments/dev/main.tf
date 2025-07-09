@@ -25,6 +25,14 @@ module "k8s" {
   aws_account_id = var.aws_account_id
 }
 
+module "vpc" {
+  source = "../../modules/vpc"
+}
+
+module "eks" {
+  source = "../../modules/eks"
+}
+
 #module "logs_bucket" {
 #  source          = "../../modules/logs_bucket"
 #  providers       = { aws = aws.use1 }

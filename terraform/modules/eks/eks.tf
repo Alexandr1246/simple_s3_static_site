@@ -5,7 +5,6 @@ module "eks_self_managed_cluster" {
   cluster_name    = "eks_self_managed_cluster"
   cluster_version = "1.31"
 
-  # EKS Addons
   cluster_addons = {
     coredns                = {}
     eks-pod-identity-agent = {}
@@ -23,8 +22,6 @@ module "eks_self_managed_cluster" {
 
       min_size = 1
       max_size = 1
-      # This value is ignored after the initial creation
-      # https://github.com/bryantbiggs/eks-desired-size-hack
       desired_size = 2
     }
   }
