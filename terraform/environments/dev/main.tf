@@ -25,9 +25,9 @@
 #  aws_account_id = var.aws_account_id
 #}
 
-#module "vpc" {
-#  source = "../../modules/vpc"
-#}
+module "vpc" {
+  source = "../../modules/vpc"
+}
 
 module "eks" {
   source = "../../modules/eks"
