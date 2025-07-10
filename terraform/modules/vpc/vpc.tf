@@ -15,29 +15,3 @@ module "eks_vpc" {
     Environment = "dev"
   }
 }
-
-resource "aws_internet_gateway" "k8s_igw" {
-  vpc_id = aws_vpc.eks_vpc_vpc.id
-
-  tags = {
-    Name = "k8s-igw"
-  }
-}
-
-resource "aws_route_table" "k8s_route_table" {
-  vpc_id = aws_vpc.eks_vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.k8s_igw.id
-  }
-
-  tags = {
-    Name = "k8s-route-table"
-  }
-}
-
-resource "aws_route_table_association" "k8s_route_table_association" {
-  subnet_id      = aws_subnet.k8s_subnet.id
-  route_table_id = aws_route_table.k8s_route_table.id
-}
