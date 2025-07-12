@@ -1,4 +1,4 @@
-name: 3-Deploy App to Kubernetes
+name: 4-Deploy App to Kubernetes
 
 #on:
 #  workflow_run:
