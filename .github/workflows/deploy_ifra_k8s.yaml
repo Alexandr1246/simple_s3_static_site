@@ -1,4 +1,4 @@
-name: Deploy K8S Infrastructure
+name: 1-Deploy K8S Infrastructure
 
 on:
   pull_request:
