@@ -5,8 +5,8 @@ module "eks" {
   cluster_name    = "eks-self-managed"
   cluster_version = "1.31"
 
-  vpc_id     = var.vpc_id
-  subnet_ids = var.subnet_ids
+  vpc_id     = module.eks_vpc.vpc_id
+  subnet_ids = module.eks_vpc.subnet_ids
 
   cluster_addons = {
     coredns                = {}
