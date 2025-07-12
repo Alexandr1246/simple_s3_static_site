@@ -1,33 +1,38 @@
-module "eks_self_managed_cluster" {
+module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "= 20.8.4"
+  version = "20.8.4"
 
-  cluster_name    = "eks_self_managed_cluster"
+  cluster_name    = "eks-self-managed"
   cluster_version = "1.31"
+
+  vpc_id     = var.vpc_id
+  subnet_ids = var.subnet_ids
 
   cluster_addons = {
     coredns                = {}
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
     vpc-cni                = {}
+    kube-proxy             = {}
+    eks-pod-identity-agent = {}
   }
 
-  vpc_id     = module.eks_vpc.vpc_id
-  subnet_ids = module.eks_vpc.private_subnets
-
   self_managed_node_groups = {
-    example = {
-      ami_type      = "AL2_x86_64"
+    self_mng_1 = {
       instance_type = "t3.medium"
+      desired_size  = 1
+      min_size      = 1
+      max_size      = 2
+    }
 
-      min_size = 1
-      max_size = 1
-      desired_size = 2
+    self_mng_2 = {
+      instance_type = "t3.medium"
+      desired_size  = 1
+      min_size      = 1
+      max_size      = 2
     }
   }
 
   tags = {
-    name = "eks_k8s_cluster"
-    environment = "dev" 
+    Environment = "dev"
+    Terraform   = "true"
   }
 }

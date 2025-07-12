@@ -27,10 +27,13 @@
 
 module "vpc" {
   source = "../../modules/vpc"
+  vpc_id = var.vpc_id
 }
 
 module "eks" {
   source = "../../modules/eks"
+  vpc_id = var.vpc_id
+  subnet_ids = var.subnet_ids
 }
 
 #module "logs_bucket" {
