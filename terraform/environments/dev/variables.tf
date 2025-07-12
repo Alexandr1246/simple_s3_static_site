@@ -60,6 +60,7 @@ variable "ssh_key_name" {
 
 variable "vpc_id" {
   description = "The VPC ID for the EKS cluster"
+  
   type        = string
 }
 
