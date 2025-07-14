@@ -1,6 +1,6 @@
 module "eks_vpc" {
   source = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "= 6.0.0"
 
   name = "esk_self_manage_vpc"
   cidr = "10.0.0.0/16"

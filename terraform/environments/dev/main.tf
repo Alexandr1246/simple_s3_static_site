@@ -27,7 +27,6 @@
 
 module "vpc" {
   source      = "../../modules/vpc"
-  
 }
 
 module "eks" {
