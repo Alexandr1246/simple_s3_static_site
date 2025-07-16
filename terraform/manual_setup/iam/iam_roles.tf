@@ -49,6 +49,21 @@ resource "aws_iam_role_policy" "github_oidc_role_policy" {
         ],
         Resource = "*"
       },
+
+      {
+      "Sid": "AllowEKSFullAccess",
+      "Effect": "Allow",
+      "Action": [
+        "eks:*",
+        "ec2:*",
+        "iam:*",
+        "kms:*",
+        "logs:*",
+        "sts:AssumeRole"
+      ],
+      "Resource": "*"
+      },
+
       {
         Effect = "Allow",
         Action = [
