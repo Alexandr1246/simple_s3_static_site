@@ -1,4 +1,4 @@
-name: 3-Build and Push Docker Image
+name: 3-Build and Push Image to Docker
 
 on:
   pull_request:
