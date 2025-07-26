@@ -35,6 +35,14 @@ module "eks" {
   subnet_ids  = module.vpc.private_subnets
 }
 
+module "bastion" {
+  source            = "./modules/bastion"
+  ami_id            = var.ami_id # Amazon Linux 2 для вашого регіону
+  instance_type     = var.instance_type
+  subnet_id         = module.pet_vpc.private_subnets[0]
+  security_group_id = aws_security_group.pet_sg.id
+}
+
 #module "logs_bucket" {
 #  source          = "../../modules/logs_bucket"
 #  providers       = { aws = aws.use1 }
