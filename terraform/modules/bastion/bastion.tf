@@ -19,9 +19,9 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 }
 
 resource "aws_instance" "bastion" {
-  ami           = var.ami_id # Наприклад, Amazon Linux 2
+  ami           = var.bastion_ami_id # Наприклад, Amazon Linux 2
   instance_type = var.instance_type
-  subnet_id     = var.subnet_id
+  subnet_id = var.public_subnet_ids[0]
   vpc_security_group_ids = [var.security_group_id]
 
   iam_instance_profile = aws_iam_instance_profile.bastion_profile.name

@@ -8,3 +8,12 @@ output "private_subnets" {
   value       = module.pet_vpc.private_subnets
 }
 
+output "public_subnet_ids" {
+  description = "List of public subnet IDs"
+  value       = module.pet_vpc.public_subnets
+}
+
+output "k8s_security_group_id" {
+  description = "Security group ID for Kubernetes nodes"
+  value       = aws_security_group.pet_sg.id
+}

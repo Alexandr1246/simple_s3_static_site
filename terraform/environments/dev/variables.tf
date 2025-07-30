@@ -84,3 +84,7 @@ variable "security_group_id" {
   description = "Security Group ID для bastion"
   type        = string
 }
+
+variable "security_group_id" {
+  type = list(string)
+}

@@ -36,12 +36,17 @@ module "eks" {
 }
 
 module "bastion" {
-  source            = "./modules/bastion"
-  ami_id            = var.ami_id # Amazon Linux 2 для вашого регіону
-  instance_type     = var.instance_type
-  subnet_id         = module.pet_vpc.private_subnets[0]
-  security_group_id = aws_security_group.pet_sg.id
+  source                      = "../../modules/bastion"
+
+  vpc_id                      = module.vpc.vpc_id
+  public_subnet_ids           = module.vpc.public_subnet_ids
+  bastion_ami_id              = "ami-xxxxxxxx" # 🔁 Вкажи Ubuntu або Amazon Linux 2 з підтримкою SSM
+  instance_type               = "t3.micro"
+  bastion_name                = "bastion-host"
+  iam_instance_profile_name   = module.bastion.iam_instance_profile_name
+  security_group_id           = module.vpc.k8s_security_group_id # 🔁 або інші
 }
+
 
 #module "logs_bucket" {
 #  source          = "../../modules/logs_bucket"
