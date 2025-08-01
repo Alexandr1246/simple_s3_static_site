@@ -44,7 +44,7 @@ module "bastion" {
   instance_type               = var.instance_type
   bastion_name                = var.bastion_name
   iam_instance_profile_name   = module.bastion.iam_instance_profile_name
-  security_group_id           = module.vpc.k8s_security_group_id # 🔁 або інші
+  security_group_id           = module.vpc.security_group_id
 }
 
 

@@ -19,7 +19,7 @@ module "pet_vpc" {
 resource "aws_security_group" "pet_sg" {
   name        = "k8s-sg"
   description = "Security group for Kubernetes nodes"
-  vpc_id      = aws_vpc.pet_vpc.id
+  vpc_id      = aws_vpc.pet_vpc.vpc_id
 
   ingress {
     from_port   = 22
