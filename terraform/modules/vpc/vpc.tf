@@ -19,7 +19,7 @@ module "pet_vpc" {
 resource "aws_security_group" "pet_sg" {
   name        = "k8s-sg"
   description = "Security group for Kubernetes nodes"
-  vpc_id      = aws_vpc.pet_vpc.vpc_id
+  vpc_id      = module.pet_vpc.vpc_id
 
   ingress {
     from_port   = 22
@@ -37,19 +37,11 @@ resource "aws_security_group" "pet_sg" {
     description = "Kubernetes API Server"
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow all outbound traffic"
-  }
-
   ingress {
     from_port   = 8285
     to_port     = 8285
     protocol    = "udp"
-    cidr_blocks = [aws_vpc.pet_vpc.cidr_block]
+    cidr_blocks = [module.pet_vpc.vpc_cidr_block]
     description = "Flannel VXLAN UDP port"
   }
 
@@ -57,14 +49,15 @@ resource "aws_security_group" "pet_sg" {
     from_port   = 8472
     to_port     = 8472
     protocol    = "udp"
-    cidr_blocks = [aws_vpc.pet_vpc.cidr_block]
+    cidr_blocks = [module.pet_vpc.vpc_cidr_block]
     description = "Flannel VXLAN UDP port (alternative)"
   }
+
   ingress {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.pet_vpc.cidr_block]
+    cidr_blocks = [module.pet_vpc.vpc_cidr_block]
     description = "NodePort traffic"
   }
 
@@ -77,11 +70,19 @@ resource "aws_security_group" "pet_sg" {
   }
 
   ingress {
-  description = "Inter-node and kubelet access"
-  from_port   = 0
-  to_port     = 65535
-  protocol    = "tcp"
-  cidr_blocks = ["10.0.1.0/24"]
+    description = "Inter-node and kubelet access"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.1.0/24"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 
   tags = {

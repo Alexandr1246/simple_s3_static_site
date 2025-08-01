@@ -17,3 +17,8 @@ output "security_group_id" {
   description = "Security group ID for Kubernetes nodes"
   value       = aws_security_group.pet_sg.id
 }
+
+output "vpc_cidr_block" {
+  description = "CIDR block of the VPC"
+  value       = module.pet_vpc.vpc_cidr_block
+}
