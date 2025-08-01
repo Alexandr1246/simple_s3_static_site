@@ -58,11 +58,6 @@ variable "ssh_key_name" {
   default     = "kuber-key-ec2"
 }
 
-variable "ami_id" {
-  description = "AMI ID для bastion EC2"
-  type        = string
-}
-
 variable "instance_type" {
   description = "Тип EC2 інстансу"
   type        = string
@@ -72,7 +67,7 @@ variable "instance_type" {
 variable "ami_id" {
   description = "ID ami образу"
   type        = string
-  default = "ami-0abcdef1234567890"
+  default = "ami-04542995864e26699"
 }
 
 variable "subnet_id" {
@@ -85,6 +80,11 @@ variable "security_group_id" {
   type        = string
 }
 
-variable "security_group_id" {
+variable "k8s_security_group_id" {
   type = list(string)
+}
+
+variable "bastion_name" {
+  type    = string
+  default = "eks-bastion"
 }

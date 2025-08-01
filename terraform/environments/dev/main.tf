@@ -40,9 +40,9 @@ module "bastion" {
 
   vpc_id                      = module.vpc.vpc_id
   public_subnet_ids           = module.vpc.public_subnet_ids
-  bastion_ami_id              = "ami-xxxxxxxx" # 🔁 Вкажи Ubuntu або Amazon Linux 2 з підтримкою SSM
-  instance_type               = "t3.micro"
-  bastion_name                = "bastion-host"
+  bastion_ami_id              = var.ami_id
+  instance_type               = var.instance_type
+  bastion_name                = var.bastion_name
   iam_instance_profile_name   = module.bastion.iam_instance_profile_name
   security_group_id           = module.vpc.k8s_security_group_id # 🔁 або інші
 }
