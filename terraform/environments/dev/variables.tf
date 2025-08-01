@@ -80,10 +80,6 @@ variable "security_group_id" {
   type        = string
 }
 
-variable "security_group_id" {
-  type = list(string)
-}
-
 variable "bastion_name" {
   type    = string
   default = "eks-bastion"
