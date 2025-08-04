@@ -77,6 +77,14 @@ resource "aws_security_group" "pet_sg" {
     cidr_blocks = ["10.0.1.0/24"]
   }
 
+    ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [module.pet_vpc.vpc_cidr_block]
+    description = "For eks port forwarding"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

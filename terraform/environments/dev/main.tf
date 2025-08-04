@@ -43,7 +43,6 @@ module "bastion" {
   bastion_ami_id              = var.ami_id
   instance_type               = var.instance_type
   bastion_name                = var.bastion_name
-  iam_instance_profile_name   = module.bastion.iam_instance_profile_name
   security_group_id           = module.vpc.security_group_id
 }
 
