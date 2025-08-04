@@ -44,12 +44,12 @@ jobs:
           TF_LOG: DEBUG
           TF_LOG_PATH: terraform-valid.log 
 
-      - name: Terraform Refresh
-        run: terraform refresh 
-        working-directory: terraform/environments/dev
-        env:
-          TF_LOG: DEBUG
-          TF_LOG_PATH: terraform-refresh.log
+      #- name: Terraform Refresh
+      #  run: terraform refresh 
+      #  working-directory: terraform/environments/dev
+      #  env:
+      #    TF_LOG: DEBUG
+      #    TF_LOG_PATH: terraform-refresh.log
 
       - name: Terraform Plan
         run: terraform plan

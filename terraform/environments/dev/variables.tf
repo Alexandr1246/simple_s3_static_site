@@ -70,16 +70,6 @@ variable "ami_id" {
   default = "ami-04542995864e26699"
 }
 
-variable "subnet_id" {
-  description = "ID приватної сабнети для bastion"
-  type        = string
-}
-
-variable "security_group_id" {
-  description = "Security Group ID для bastion"
-  type        = string
-}
-
 variable "bastion_name" {
   type    = string
   default = "eks-bastion"

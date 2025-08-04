@@ -17,7 +17,7 @@ module "pet_vpc" {
 }
 
 resource "aws_security_group" "pet_sg" {
-  name        = "k8s-sg"
+  name        = "global_sg"
   description = "Security group for Kubernetes nodes"
   vpc_id      = module.pet_vpc.vpc_id
 
