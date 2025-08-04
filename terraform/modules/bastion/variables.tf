@@ -32,3 +32,8 @@ variable "allowed_security_groups" {
 variable "security_group_id" {
   type = string
 }
+
+variable "private_subnet_ids" {
+  description = "List of private subnet IDs for the Bastion host"
+  type        = list(string)
+}

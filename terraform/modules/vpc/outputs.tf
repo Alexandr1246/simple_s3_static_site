@@ -3,7 +3,7 @@ output "vpc_id" {
   value       = module.pet_vpc.vpc_id
 }
 
-output "private_subnets" {
+output "private_subnet_ids" {
   description = "List of private subnet IDs"
   value       = module.pet_vpc.private_subnets
 }
