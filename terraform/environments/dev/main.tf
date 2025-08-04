@@ -26,25 +26,24 @@
 #}
 
 module "vpc" {
-  source      = "../../modules/vpc"
+  source               = "../../modules/vpc"
 }
 
 module "eks" {
-  source      = "../../modules/eks"
-  vpc_id      = module.vpc.vpc_id
-  subnet_ids  = module.vpc.private_subnets
+  source               = "../../modules/eks"
+  vpc_id               = module.vpc.vpc_id
+  subnet_ids           = module.vpc.private_subnet_ids
 }
 
 module "bastion" {
-  source                      = "../../modules/bastion"
-  vpc_id                      = module.vpc.vpc_id
-  private_subnet_ids          = module.pet_vpc.private_subnets
-  bastion_ami_id              = var.ami_id
-  instance_type               = var.instance_type
-  bastion_name                = var.bastion_name
-  security_group_id           = module.vpc.security_group_id
+  source               = "../../modules/bastion"
+  vpc_id               = module.vpc.vpc_id
+  private_subnet_ids   = module.vpc.private_subnet_ids
+  bastion_ami_id       = var.ami_id
+  instance_type        = var.instance_type
+  bastion_name         = var.bastion_name
+  security_group_id    = module.vpc.security_group_id
 }
-
 
 #module "logs_bucket" {
 #  source          = "../../modules/logs_bucket"
