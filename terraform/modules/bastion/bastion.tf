@@ -20,11 +20,13 @@ resource "aws_instance" "bastion" {
     apt-get install -y socat awscli
 
     echo "[INFO] Fetching EKS cluster endpoint..."
-    ENDPOINT=$(aws eks describe-cluster --name eks-self-managed --region eu-north-1 --query "cluster.endpoint" --output text)
+    RAW_ENDPOINT=$(aws eks describe-cluster --name eks-self-managed --region eu-north-1 --query "cluster.endpoint" --output text)
+    ENDPOINT=$(echo "$RAW_ENDPOINT" | sed 's|https://||')
 
-    echo "[INFO] Starting socat to forward port 443 to EKS API endpoint $ENDPOINT" 
-    nohup socat TCP-LISTEN:443,fork TCP:$ENDPOINT:443 > /var/log/socat.log 2>&1 &
+    echo "[INFO] Starting socat to forward port 443 to EKS API endpoint $ENDPOINT"
+    nohup socat TCP-LISTEN:443,reuseaddr,fork TCP:$ENDPOINT:443 > /var/log/socat.log 2>&1 &
     EOF
+
 
   tags = {
     Name        = "bastion-host"
