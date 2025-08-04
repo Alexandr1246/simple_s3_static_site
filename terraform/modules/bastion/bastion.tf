@@ -9,12 +9,22 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = true
 
   user_data = <<-EOF
-  #!/bin/bash
-  apt-get update -y
-  apt-get install -y socat awscli
-  ENDPOINT=$(aws eks describe-cluster --name eks-self-managed --region eu-north-1 --query "cluster.endpoint" --output text)
-  nohup socat TCP-LISTEN:443,fork TCP:$ENDPOINT:443 &
-  EOF
+    #!/bin/bash
+    exec > /var/log/bastion-setup.log 2>&1
+    set -x
+
+    echo "[INFO] Updating system packages..."
+    apt-get update -y
+
+    echo "[INFO] Installing socat and awscli..."
+    apt-get install -y socat awscli
+
+    echo "[INFO] Fetching EKS cluster endpoint..."
+    ENDPOINT=$(aws eks describe-cluster --name eks-self-managed --region eu-north-1 --query "cluster.endpoint" --output text)
+
+    echo "[INFO] Starting socat to forward port 443 to EKS API endpoint $ENDPOINT" 
+    nohup socat TCP-LISTEN:443,fork TCP:$ENDPOINT:443 > /var/log/socat.log 2>&1 &
+    EOF
 
   tags = {
     Name        = "bastion-host"
