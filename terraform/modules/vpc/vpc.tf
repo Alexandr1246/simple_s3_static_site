@@ -10,10 +10,35 @@ module "pet_vpc" {
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   enable_nat_gateway = true
+
   tags = {
     Terraform = "true"
     Environment = "dev"
   }
+}
+
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id            = module.pet_vpc.vpc_id
+  service_name      = "com.amazonaws.eu-north-1.ssm"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = module.pet_vpc.private_subnets
+  security_group_ids = [aws_security_group.pet_sg.id]
+}
+
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id            = module.pet_vpc.vpc_id
+  service_name      = "com.amazonaws.eu-north-1.ec2messages"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = module.pet_vpc.private_subnets
+  security_group_ids = [aws_security_group.pet_sg.id]
+}
+
+resource "aws_vpc_endpoint" "ssmmessages" {
+  vpc_id            = module.pet_vpc.vpc_id
+  service_name      = "com.amazonaws.eu-north-1.ssmmessages"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = module.pet_vpc.private_subnets
+  security_group_ids = [aws_security_group.pet_sg.id]
 }
 
 resource "aws_security_group" "pet_sg" {
