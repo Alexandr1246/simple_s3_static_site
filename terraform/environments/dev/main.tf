@@ -37,9 +37,8 @@ module "eks" {
 
 module "bastion" {
   source                      = "../../modules/bastion"
-
   vpc_id                      = module.vpc.vpc_id
-  public_subnet_ids           = module.vpc.private_subnets
+  private_subnet_ids          = module.pet_vpc.private_subnets
   bastion_ami_id              = var.ami_id
   instance_type               = var.instance_type
   bastion_name                = var.bastion_name

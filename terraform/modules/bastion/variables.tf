@@ -2,10 +2,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "public_subnet_ids" {
-  type = list(string)
-}
-
 variable "bastion_ami_id" {
   type = string
 }
