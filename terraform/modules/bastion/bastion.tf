@@ -23,7 +23,7 @@ resource "aws_instance" "bastion" {
     ENDPOINT=$(aws eks describe-cluster --name eks-self-managed --region eu-north-1 --query "cluster.endpoint" --output text | sed 's~https://~~')
 
     echo "[INFO] Starting socat to forward port 443 to EKS API endpoint $ENDPOINT"
-    nohup socat TCP-LISTEN:443,reuseaddr,fork TCP:[$ENDPOINT]:443 > /var/log/socat.log 2>&1 &
+    sudo nohup socat TCP-LISTEN:443,reuseaddr,fork TCP:[$ENDPOINT]:443 > ~/socat.log 2>&1 &
     EOF
 
 
